@@ -1,24 +1,53 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:social_app/models/user.dart';
+import 'package:social_app/screens/sign_up/controller/signup_controller.dart';
+import 'package:social_app/services/auth.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
-Widget signupEmailTF() {
+Widget signupNameTF(SignupController signupController) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       const Text(
-        'Email',
+        'Name',
         style: kLabelStyle,
       ),
       const SizedBox(height: 10.0),
       Form(
         child: TextFormField(
-          onChanged: (value) {
+          controller: signupController.nameController,
+          onChanged: (value) {},
+          keyboardType: TextInputType.emailAddress,
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'OpenSans',
+          ),
+          decoration: nameInputDecoration,
+        ),
+      ),
+    ],
+  );
+}
 
-          },
+Widget signupPhoneTF(SignupController signupController) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+      const Text(
+        'Phone',
+        style: kLabelStyle,
+      ),
+      const SizedBox(height: 10.0),
+      Form(
+        child: TextFormField(
+          controller: signupController.phoneController,
+          onChanged: (value) {},
           keyboardType: TextInputType.emailAddress,
           style: const TextStyle(
             color: Colors.white,
@@ -27,12 +56,11 @@ Widget signupEmailTF() {
           decoration: emailInputDecoration,
         ),
       ),
-
     ],
   );
 }
 
-Widget signupPasswordTF() {
+Widget signupPasswordTF(SignupController signupController) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -43,10 +71,9 @@ Widget signupPasswordTF() {
       const SizedBox(height: 10.0),
       Form(
         child: TextFormField(
+          controller: signupController.passwordController,
           obscureText: true,
-          onChanged: (value) {
-          },
-
+          onChanged: (value) {},
           style: const TextStyle(
             color: Colors.white,
             fontFamily: 'OpenSans',
@@ -81,43 +108,48 @@ Widget confirmPasswordTF() {
   );
 }
 
-Widget registerBtn() {
+Widget registerBtn(SignupController signupController) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 25.0),
     width: double.infinity,
     // ignore: deprecated_member_use
     child: RaisedButton(
       elevation: 5.0,
-     onPressed: (){
-
-     },
-     /* onPressed: () async {
-        if (signupController.validateSignup()) {
-          bool isRegisted = await firebaseRegister(signupController);
-          if(isRegisted) {
-            Get.defaultDialog(
-                title: 'Successful register',
-                middleText: 'Back to login page?',
-                textConfirm: 'OK',
-                onConfirm: (){
-                  Get.back();
-                },
-                textCancel: 'Cancel',
-                onCancel: (){
-                }
-            );
-          } else {
-            Get.defaultDialog(
-              title: 'Fail to register',
-              middleText: 'Email was used!',
+      onPressed: () async {
+        final res = await register(User(
+            signupController.nameController.text,
+            signupController.phoneController.text,
+            signupController.passwordController.text));
+            print("123213");
+        if (res.statusCode == 201) {
+          Get.defaultDialog(
+              title: 'Successful register',
+              middleText: 'Back to login page?',
               textConfirm: 'OK',
               onConfirm: () {
                 Get.back();
               },
-            );
-          }
+              textCancel: 'Cancel',
+              onCancel: () {
+
+              }
+          );
+        } else {
+          Get.defaultDialog(
+              title: 'Error',
+              middleText: json.decode(res.body)["message"],
+              textConfirm: 'OK',
+              onConfirm: () {
+                Get.back();
+              },
+              textCancel: 'Cancel',
+              onCancel: () {
+
+              }
+          );
         }
-      },*/
+      },
+      
       padding: const EdgeInsets.all(15.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),

@@ -2,30 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:social_app/screens/sign_in/controller/signin_controller.dart';
+import 'package:social_app/screens/sign_in/views/signin_screen_widgets.dart';
 
-import 'signup_screen_widgets.dart';
 
-
-
-class SignUpScreen extends StatefulWidget {
+class SigninScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _SigninScreenState createState() => _SigninScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SigninScreenState extends State<SigninScreen> {
+  final SigninController signinController = Get.put(SigninController());
+
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("lib/assets/signup_background.png"),
-              fit: BoxFit.cover,
-            ),
+          image: DecorationImage(
+            image: AssetImage("lib/assets/signin_background.png"),
+            fit: BoxFit.cover,
           ),
+        ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
           body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.light,
             child: GestureDetector(
@@ -42,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           const Text(
-                            'Sign Up',
+                            'Sign In',
                             style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'OpenSans',
@@ -51,18 +53,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           const SizedBox(height: 30.0),
-                          signupEmailTF(),
-                          const SizedBox(height: 20.0,),
-                          signupPasswordTF(),
-                          const SizedBox(height: 20.0,),
-                          confirmPasswordTF(),
+                          signinPhoneTF(signinController: signinController),
                           const SizedBox(height: 30.0,),
-                          registerBtn(),
-                          backToLoginBtn(),
+                          signinPasswordTF(signinController: signinController),
+                          forgotPasswordBtn(signinController: signinController),
+                          rememberMeCheckbox(signinController: signinController),
+                          signinBtn(signinController: signinController),
+                          headToSignupBtn(signinController: signinController),
                         ],
-                      ),
+                      )),
                     ),
-                  )
             ),
           ),
         ),

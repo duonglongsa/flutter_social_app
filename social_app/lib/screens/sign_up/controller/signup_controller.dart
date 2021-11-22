@@ -3,10 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SignupController extends GetxController{
-  final emailFormKey = GlobalKey<FormState>();
+  final phoneFormKey = GlobalKey<FormState>();
   final passwordFormKey = GlobalKey<FormState>();
   final confirmPasswordFormKey = GlobalKey<FormState>();
 
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPassWordController = TextEditingController();
 
