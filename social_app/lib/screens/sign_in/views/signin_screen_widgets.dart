@@ -2,8 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:social_app/screens/sign_in/controller/signin_controller.dart';
 import 'package:social_app/utilities/style_constants.dart';
-import 'package:social_app/view/sign_in/controller/signin_controller.dart';
+
 
 Widget signinPhoneTF({
   required SigninController signinController,
@@ -18,6 +19,7 @@ Widget signinPhoneTF({
       const SizedBox(height: 10.0),
       Form(
         child: TextFormField(
+          controller: signinController.phoneController,
           keyboardType: TextInputType.emailAddress,
           style: const TextStyle(
             color: Colors.white,
@@ -74,6 +76,7 @@ Widget signinPasswordTF({
       const SizedBox(height: 10.0),
       GetBuilder<SigninController>(
         builder:(_) => TextFormField(
+          controller: signinController.passwordController,
           obscureText: signinController.isObscureText,
           style: const TextStyle(
             color: Colors.white,
@@ -131,7 +134,9 @@ Widget signinPasswordTF({
   );
 }
 
-Widget signinBtn() {
+Widget signinBtn({
+  required SigninController signinController,
+}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 25.0),
     width: double.infinity,
@@ -139,7 +144,7 @@ Widget signinBtn() {
     child: RaisedButton(
       elevation: 5.0,
       onPressed: () {
-
+        signinController.pressSignin();
       },
       padding: const EdgeInsets.all(15.0),
       shape: RoundedRectangleBorder(
