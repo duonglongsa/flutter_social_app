@@ -123,7 +123,7 @@ Widget post({
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       //backgroundImage: avatar,
                       backgroundColor: Colors.greenAccent,
                       radius: 18,
