@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:social_app/view/sign_in/views/signin_screen.dart';
+import 'package:social_app/view/chat/views/chat_screen.dart';
+import 'package:social_app/view/chat/views/options_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +38,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    return SigninScreen();
+    return ChatScreen();
   }
 }

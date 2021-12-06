@@ -54,6 +54,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
+    - lib/assets/avatar.jpg
     - lib/assets/signin_background.png
     - lib/assets/signup_background.png
 
