@@ -44,7 +44,7 @@ class CreatePostController extends GetxController {
       textConfirm: 'OK',
       textCancel: 'Cancel',
       onConfirm: () {
-        Get.off(() => HomePageScreen());
+        Get.back(closeOverlays: true);
       },
       onCancel: (){
 

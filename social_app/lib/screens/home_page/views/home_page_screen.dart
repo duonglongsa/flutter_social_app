@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:social_app/screens/create_post/views/create_post_screen.dart';
 import 'package:social_app/screens/home_page/controller/home_controller.dart';
-import 'package:social_app/screens/post_creen.dart';
+import 'package:social_app/screens/view_post_screen/post_creen.dart';
 import 'package:social_app/screens/sign_in/controller/signin_controller.dart';
 import 'package:social_app/screens/sign_in/views/signin_screen_widgets.dart';
 import 'package:social_app/screens/template_widget.dart';
@@ -91,6 +91,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           return InkWell(
                             onTap: () => Get.to(() => PostScreen(post: homeController.postList![index],)),
                             child: post(
+                              postColor: cointainerColor,
                               context: context,
                               post: homeController.postList![index],
                             ),

@@ -11,7 +11,6 @@ import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-
 Widget createPostWidget({
   required VoidCallback onCreatePost,
 }) {
@@ -109,11 +108,12 @@ Widget createPostWidget({
 Widget post({
   required BuildContext context,
   required Post post,
+  required Color postColor
 }) {
   return Card(
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      color: cointainerColor,
+      color: postColor,
       child: Column(
         children: [
           Padding(
@@ -160,11 +160,11 @@ Widget post({
                       ),
                     ),
                     IconButton(
-                        icon: const Icon(
-                          Icons.more_horiz,
-                          color: Colors.white70,
-                        ),
-                        onPressed: () => _showPostOption(context, post.postID!),
+                      icon: const Icon(
+                        Icons.more_horiz,
+                        color: Colors.white70,
+                      ),
+                      onPressed: () => _showPostOption(context, post.postID!),
                     ),
                   ],
                 ),
@@ -178,7 +178,7 @@ Widget post({
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Image.network(
-                    "https://memehay.com/meme/20210924/troll-mu-cup-trong-long-nguoi-ham-mo-la-chiec-cup-quy-gia-nhat.jpg"),
+                      "https://memehay.com/meme/20210924/troll-mu-cup-trong-long-nguoi-ham-mo-la-chiec-cup-quy-gia-nhat.jpg"),
                 ),
                 const SizedBox(
                   height: 5,
@@ -280,6 +280,85 @@ Widget post({
   );
 }
 
+Widget commentWidget({
+  required BuildContext context,
+  VoidCallback? onLikeTap,
+  VoidCallback? onReplyTap,
+}) =>
+    Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const CircleAvatar(
+          radius: 18,
+          backgroundColor: Colors.grey,
+          //backgroundImage: NetworkImage(rootComment.avatarUrl),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                decoration: BoxDecoration(
+                    color: cointainerColor,
+                    borderRadius: BorderRadius.circular(12)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "user name",
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                          fontWeight: FontWeight.w600, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "comment asdas",
+                      style: Theme.of(context).textTheme.caption!.copyWith(
+                          fontWeight: FontWeight.w300, color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              DefaultTextStyle(
+                style: Theme.of(context).textTheme.caption!.copyWith(
+                    color: Colors.white60, fontWeight: FontWeight.bold),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text("time ago"),
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      InkWell(
+                        onTap: onLikeTap,
+                        child: const Text('Like'),
+                      ),
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      InkWell(
+                        onTap: onReplyTap,
+                        child: const Text('Reply'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
 void _showPostOption(BuildContext context, String postId) {
   showModalBottomSheet(
     context: context,
@@ -325,9 +404,9 @@ void _showPostOption(BuildContext context, String postId) {
 void _selectedDeletePost(String postId) async {
   print(postId);
   String? token = await const FlutterSecureStorage().read(key: 'token');
-  
+
   await deletePost(postId, token!);
-  
+
   final homeController = Get.find<HomeController>();
   print("before" + homeController.postList!.length.toString());
   homeController.removePostFromList(postId);
