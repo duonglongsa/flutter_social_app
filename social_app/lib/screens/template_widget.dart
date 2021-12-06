@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:social_app/models/comment_model.dart';
 import 'package:social_app/models/post.dart';
+import 'package:social_app/models/user.dart';
 import 'package:social_app/screens/home_page/controller/home_controller.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
@@ -282,6 +284,8 @@ Widget post({
 
 Widget commentWidget({
   required BuildContext context,
+  required User user,
+  required CommentModel comment,
   VoidCallback? onLikeTap,
   VoidCallback? onReplyTap,
 }) =>
@@ -309,7 +313,7 @@ Widget commentWidget({
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "user name",
+                      user.name!,
                       style: Theme.of(context).textTheme.caption!.copyWith(
                           fontWeight: FontWeight.w600, color: Colors.white),
                     ),
@@ -317,7 +321,7 @@ Widget commentWidget({
                       height: 4,
                     ),
                     Text(
-                      "comment asdas",
+                      comment.content,
                       style: Theme.of(context).textTheme.caption!.copyWith(
                           fontWeight: FontWeight.w300, color: Colors.white),
                     ),
@@ -334,7 +338,7 @@ Widget commentWidget({
                       const SizedBox(
                         width: 8,
                       ),
-                      Text("time ago"),
+                      Text(timeago.format(comment.timeCreated),),
                       const SizedBox(
                         width: 24,
                       ),

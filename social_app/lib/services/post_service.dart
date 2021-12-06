@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:social_app/models/comment_model.dart';
 import 'package:social_app/models/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
