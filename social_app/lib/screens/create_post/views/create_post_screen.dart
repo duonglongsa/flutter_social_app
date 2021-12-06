@@ -49,39 +49,42 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: backGroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: createPostController.describedController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
+        body: Stack(
+          children: [
+            Container(
+              color: backGroundColor,
+            ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: createPostController.describedController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: "What is on your mind?",
+                        hintStyle: kHintTextStyle,
+                        border: InputBorder.none,
+                      ),
                     ),
-                    decoration: const InputDecoration(
-                      hintText: "What is on your mind?",
-                      hintStyle: kHintTextStyle,
-                      border: InputBorder.none,
+                   
+                    GetBuilder(
+                      init: createPostController,
+                      builder: (_) => createPostController.imagePath != ''? 
+                      Image.file(File(createPostController.imagePath)) 
+                      : Container(color: backGroundColor,),
                     ),
-                  ),
-                 
-                  GetBuilder(
-                    init: createPostController,
-                    builder: (_) => createPostController.imagePath != ''? 
-                    Image.file(File(createPostController.imagePath)) 
-                    :const SizedBox()
-                    ,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
         bottomNavigationBar: Container(
           color: cointainerColor,
