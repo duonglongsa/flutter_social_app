@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import 'package:social_app/view/chat/views/chat_message.dart';
+import 'package:social_app/screens/chat/views/chat_message.dart';
 
 import 'options_screen.dart';
 
@@ -22,7 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios)),
+            IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back_ios)),
             InkWell(
                 child: CircleAvatar(backgroundImage: AssetImage("lib/assets/avatar.jpg")),
                 onTap: () => _navigateToNextScreen(context),
@@ -43,6 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
         backgroundColor: const Color(0xff312B83),
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
 
       body:

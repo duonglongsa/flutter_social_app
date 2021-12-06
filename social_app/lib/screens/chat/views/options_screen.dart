@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:social_app/view/chat/views/chat_screen.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:social_app/screens/chat/views/chat_screen.dart';
 
 class OptionsScreen extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class _OptionsScreenState extends State<OptionsScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back_ios)),
+            IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back_ios)),
             SizedBox(width: 10,),
             Text("Options", style: TextStyle(fontSize: 20)),
           ],

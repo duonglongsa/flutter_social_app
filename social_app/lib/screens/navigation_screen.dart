@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_app/screens/home_page/views/home_page_screen.dart';
 import 'package:social_app/utilities/style_constants.dart';
+import 'package:social_app/screens/overview_chat/views/overview_chat.dart';
 
 class NavScreen extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     HomePageScreen(),
     Scaffold(),
-    Scaffold(),
+    ContactsScreen(),
     Scaffold(),
   ];
   final List<IconData> _icons = const [
