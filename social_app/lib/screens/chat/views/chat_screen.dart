@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:social_app/view/chat/views/chat_message.dart';
+import 'package:social_app/screens/chat/views/chat_message.dart';
 
 import 'options_screen.dart';
 
