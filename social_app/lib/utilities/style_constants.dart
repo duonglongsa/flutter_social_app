@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+Color backGroundColor = const Color(0xFF152238);
+Color cointainerColor = const Color(0xFF1c2e4a);
+
+const kPageHeadingStye = TextStyle(
+  fontSize: 20,
+  color: Colors.white,
+  fontFamily: 'OpenSans',
+);
+
 const kHintTextStyle = TextStyle(
   color: Colors.white54,
   fontFamily: 'OpenSans',
@@ -27,6 +36,45 @@ final kBoxDecorationStyle = BoxDecoration(
       offset: Offset(0, 2),
     ),
   ],
+);
+
+final nameInputDecoration = InputDecoration(
+    errorStyle: kErrorStyle,
+    fillColor: Colors.white24,
+    filled: true,
+    hintText: 'Enter your Name',
+    hintStyle: kHintTextStyle,
+    contentPadding: const EdgeInsets.only(top: 14.0),
+    prefixIcon: const Icon(
+      Icons.account_box,
+      color: Colors.white,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(
+        width: 0.0,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(
+        width: 0.0,
+      ),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(
+        color: Colors.red,
+        width: 1.0,
+      ),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(
+        color: Colors.red,
+        width: 1.0,
+      ),
+    )
 );
 
 final emailInputDecoration = InputDecoration(

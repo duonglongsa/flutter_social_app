@@ -2,33 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
-import 'package:social_app/view/sign_in/controller/signin_controller.dart';
-import 'package:social_app/view/sign_in/views/signin_screen_widgets.dart';
+import 'package:social_app/screens/sign_up/controller/signup_controller.dart';
+
+import 'signup_screen_widgets.dart';
 
 
 
-class SigninScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _SigninScreenState createState() => _SigninScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
-  final SigninController signinController = Get.put(SigninController());
+class _SignUpScreenState extends State<SignUpScreen> {
 
+  final SignupController signupController = Get.put(SignupController());
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("lib/assets/signin_background.png"),
-            fit: BoxFit.cover,
+            image: DecorationImage(
+              image: AssetImage("lib/assets/signup_background.png"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          resizeToAvoidBottomInset: false,
           body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.light,
             child: GestureDetector(
@@ -45,7 +45,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           const Text(
-                            'Sign In',
+                            'Sign Up',
                             style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'OpenSans',
@@ -54,16 +54,20 @@ class _SigninScreenState extends State<SigninScreen> {
                             ),
                           ),
                           const SizedBox(height: 30.0),
-                          signinPhoneTF(signinController: signinController),
+                          signupNameTF(signupController),
+                          const SizedBox(height: 20.0,),
+                          signupPhoneTF(signupController),
+                          const SizedBox(height: 20.0,),
+                          signupPasswordTF(signupController),
+                          const SizedBox(height: 20.0,),
+                          confirmPasswordTF(),
                           const SizedBox(height: 30.0,),
-                          signinPasswordTF(signinController: signinController),
-                          forgotPasswordBtn(signinController: signinController),
-                          rememberMeCheckbox(signinController: signinController),
-                          signinBtn(),
-                          headToSignupBtn(signinController: signinController),
+                          registerBtn(signupController),
+                          backToLoginBtn(),
                         ],
-                      )),
+                      ),
                     ),
+                  )
             ),
           ),
         ),
