@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:social_app/screens/create_post/views/create_post_screen.dart';
 
 import 'screens/sign_in/views/signin_screen.dart';
 
