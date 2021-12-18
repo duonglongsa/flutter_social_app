@@ -10,6 +10,7 @@ const io = require('socket.io')(3000)
 // const MessageModel = require("../models/Messages");
 
 // connect to mongodb
+mongoose.set('useCreateIndex', true)
 mongoose.connect(MONGO_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
