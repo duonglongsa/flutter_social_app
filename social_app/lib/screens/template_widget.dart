@@ -107,11 +107,10 @@ Widget createPostWidget({
   );
 }
 
-Widget post({
-  required BuildContext context,
-  required Post post,
-  required Color postColor
-}) {
+Widget post(
+    {required BuildContext context,
+    required Post post,
+    required Color postColor}) {
   return Card(
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -166,7 +165,17 @@ Widget post({
                         Icons.more_horiz,
                         color: Colors.white70,
                       ),
-                      onPressed: () => _showPostOption(context, post.postID!),
+                      onPressed: () async {
+                        String? currentUserId = await FlutterSecureStorage().read(key: 'userId');
+                        print(currentUserId);
+                        print(post.postUser!.id);
+                        if(currentUserId == post.postUser!.id){
+                          return _showPostOption(context, post.postID!);
+                        } else {
+                          return _showOthersPostOption(context, post.postID!);
+                        }
+                        
+                      },
                     ),
                   ],
                 ),
@@ -185,6 +194,44 @@ Widget post({
                 const SizedBox(
                   height: 5,
                 ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.thumb_up,
+                        size: 10.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 4.0),
+                    Expanded(
+                      child: Text(
+                        '${post.countLikes} Likes',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '${post.countComments} Comments',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      'Shares',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                    )
+                  ],
+                ),
                 const Divider(
                   height: 10.0,
                   thickness: 0.5,
@@ -199,19 +246,23 @@ Widget post({
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
+                          onTap: () async {
+                            String? token = await FlutterSecureStorage().read(key: 'token');
+                            likePost(post.postID!, token!);
+                          },
                           child: Container(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12.0),
                             height: 25.0,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.thumb_up_alt_outlined,
-                                  color: Colors.white70,
+                                  color: post.isLike ? Colors.blue:Colors.white70,
                                 ),
-                                SizedBox(width: 4.0),
-                                Text(
+                                const SizedBox(width: 4.0),
+                                const Text(
                                   'Like',
                                   style: TextStyle(color: Colors.white70),
                                 ),
@@ -338,7 +389,9 @@ Widget commentWidget({
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(timeago.format(comment.timeCreated),),
+                      Text(
+                        timeago.format(comment.timeCreated),
+                      ),
                       const SizedBox(
                         width: 24,
                       ),
@@ -362,6 +415,125 @@ Widget commentWidget({
         ),
       ],
     );
+
+void _showOthersPostOption(BuildContext context, String postId){
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    backgroundColor: backGroundColor,
+    builder: (BuildContext context) {
+      return Wrap(
+        children: [
+          Column(
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.report,
+                  color: Colors.white,
+                ),
+                title: const Text(
+                  "Report",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () => _showRepostForm(context, postId),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showRepostForm(BuildContext context, String postId){
+  TextEditingController subjectTextController = TextEditingController();
+  TextEditingController detailsTextController = TextEditingController();
+
+  showModalBottomSheet(
+    isScrollControlled: true,
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    backgroundColor: backGroundColor,
+    builder: (BuildContext context) {
+      return Wrap(
+        children: [
+          Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Text(
+                    "Subject",
+                    style: TextStyle(color: Colors.white),
+
+                  ),
+                  title: TextFormField(
+                    controller: subjectTextController,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),                   
+                  ),
+                ),
+                ListTile(
+                  leading: const Text(
+                    "Details",
+                    style: TextStyle(color: Colors.white),
+
+                  ),
+                  title: TextFormField(
+                    controller: detailsTextController,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [                    
+                    TextButton(
+                      onPressed: (){}, 
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        String? token = await FlutterSecureStorage().read(key: 'token');
+                        print(token);
+                        reportPost(
+                          postId,
+                          subjectTextController.text,
+                          detailsTextController.text, 
+                          token!,
+                        );
+                      },
+                      child: const Text(
+                        "Report",
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 void _showPostOption(BuildContext context, String postId) {
   showModalBottomSheet(

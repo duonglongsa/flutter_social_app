@@ -8,10 +8,11 @@ import 'package:async/async.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:social_app/utilities/configs.dart';
 
+//todo: chinh lai api de fetch
 
-Future<List<Post>> getPostList(String userId, String token) async {
+Future<List<Post>> getPostList(String token) async {
   var res = await http
-      .get(Uri.parse(localhost + "/v1/posts/list?userId=" + userId), headers: {
+      .get(Uri.parse(localhost + "/v1/posts/list"), headers: {
     'Context-Type': 'application/json;charSet=UTF-8',
     'Authorization': 'Bearer $token',
     'Accept': 'application/json',
@@ -51,7 +52,8 @@ Future<String> createPost(Post post, String token) async {
 
 Future<void> deletePost(String postId, String token) async {
   var res = await http
-      .get(Uri.parse(localhost + "/v1/posts/delete/$postId"), headers: {
+      .get(Uri.parse(localhost + "/v1/posts/delete/$postId"),
+  headers: {
     'Context-Type': 'application/json;charSet=UTF-8',
     'Authorization': 'Bearer $token',
     'Accept': 'application/json',
@@ -59,5 +61,34 @@ Future<void> deletePost(String postId, String token) async {
   var responseJson = json.decode(res.body);
   print(responseJson["message"].toString());
 }
+
+Future<void> reportPost(String postId, String subject, String details, String token) async {
+  var res = await http
+      .post(Uri.parse(localhost + "/v1/postReport/create/" + postId), 
+  headers: {
+    'Context-Type': 'application/json;charSet=UTF-8',
+    'Authorization': 'Bearer $token',
+    'Accept': 'application/json',
+  },
+  body: {
+        "subject": subject,
+        "details": details,
+  });
+  var responseJson = json.decode(res.body);
+  print(responseJson["data"].toString());
+}
+
+Future<void> likePost(String postId, String token) async {
+  var res = await http
+      .post(Uri.parse(localhost + "/v1//postLike/action/" + postId), 
+  headers: {
+    'Context-Type': 'application/json;charSet=UTF-8',
+    'Authorization': 'Bearer $token',
+    'Accept': 'application/json',
+  },);
+  var responseJson = json.decode(res.body);
+  print(responseJson["data"].toString());
+}
+
 
 
