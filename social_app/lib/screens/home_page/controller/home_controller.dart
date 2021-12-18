@@ -19,7 +19,7 @@ class HomeController extends GetxController {
   }
 
   Future<List<Post>> getList() async {
-    postList = await getPostList(userId!, token!);
+    postList = await getPostList(token!);
     postList = postList!.reversed.toList();   //newest post first
     update();
     return postList!;

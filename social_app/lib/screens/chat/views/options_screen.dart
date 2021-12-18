@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:social_app/view/chat/views/chat_screen.dart';
 
 class OptionsScreen extends StatefulWidget {
   @override

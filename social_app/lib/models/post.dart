@@ -9,9 +9,13 @@ class Post {
   String? image;
   String? video;
 
-  int? likeCounter;
+  List<dynamic>? likedUserId;
+
+  int? countLikes;
   int? countComments;
-  int? shareCounter;
+  int? countShares;
+
+  bool isLike = false;
 
   User? postUser;
 
@@ -22,6 +26,8 @@ class Post {
         postID = json["_id"],
         described = json["described"],
         timeCreated = DateTime.parse(json["createdAt"]),
-        postUser = User.fromPostJson(json["author"]);
-
+        postUser = User.fromPostJson(json["author"]),
+        countLikes = (json["like"] as List).length,
+        likedUserId = json["like"],
+        isLike = json["isLike"];
 }

@@ -41,6 +41,7 @@ dependencies:
   flutter_secure_storage: ^4.2.1
   image_picker: ^0.8.4+4
   timeago: ^3.1.0
+  socket_io_client: ^1.0.2
 
 dev_dependencies:
   flutter_test:
