@@ -50,23 +50,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     const SizedBox(height: 60,)
                   ],
                 ),
-                Positioned(
-                    bottom: 0,
-                    left: 130,
-                    child: CircleAvatar(
-                        radius: 80,
-                        backgroundColor: backGroundColor,
-                        child: CircleAvatar(
-                          radius: 75,
-                          backgroundImage: AssetImage("lib/assets/avatar.jpg"),
-                        ),
+                Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CircleAvatar(
+                          radius: 80,
+                          backgroundColor: backGroundColor,
+                          child: CircleAvatar(
+                            radius: 75,
+                            backgroundImage: AssetImage("lib/assets/avatar.jpg"),
+                          ),
+                      ),
                     )
                 )
               ]
             ),
-            SizedBox(width: 450, height: 20,),
-            Text("Girl", style: TextStyle(fontSize: 30, color: Colors.white)),
-            SizedBox(height: 20,width: 0),
+            const SizedBox(width: 450, height: 20,),
+            const Text("Girl", style: TextStyle(fontSize: 30, color: Colors.white)),
+            const SizedBox(height: 20,width: 0),
             createPostWidget(onCreatePost: ()=>{}),
             ListView.builder(
               shrinkWrap: true,
