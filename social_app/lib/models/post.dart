@@ -16,6 +16,7 @@ class Post {
   User? postUser;
 
   Post(this.userId, this.described, this.image, this.video);
+  Post.test(this.postUser, this.described, this.image, this.video, this.timeCreated);
 
   Post.fromJson(Map<String, dynamic> json)
       : countComments = json["countComments"],

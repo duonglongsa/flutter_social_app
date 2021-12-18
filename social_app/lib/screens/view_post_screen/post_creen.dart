@@ -12,6 +12,8 @@ import 'package:social_app/services/comment_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import 'post_controller.dart';
+
 class PostScreen extends StatefulWidget {
   final Post post;
 
@@ -22,6 +24,21 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  PostController postController = Get.put(PostController());
+
+  Future initController() async {
+    postController.postId = widget.post.postID!;
+    await postController.getUserInfo();
+    await postController.getList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("init");
+    initController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,24 +72,38 @@ class _PostScreenState extends State<PostScreen> {
                     context: context,
                     post: widget.post,
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: commentWidget(
-                            context: context,
-                          ),
-                        );
-                      },
-                    ),
-                  ),                
+                    child: GetBuilder<PostController>(
+                        init: postController,
+                        builder: (context) {
+                          if (postController.commentList == null) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            return ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: postController.commentList!.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: commentWidget(
+                                    context: context,
+                                    user: postController
+                                        .commentList![index].user!,
+                                    comment: postController.commentList![index],
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        }),
+                  ),
                 ],
               ),
             ),
@@ -80,46 +111,51 @@ class _PostScreenState extends State<PostScreen> {
         ),
         bottomSheet: Container(
           color: backGroundColor,
-          child:  Container(
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0),
-                color: Colors.white,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: TextFormField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      //controller: commentController.commentTextController,
-                      style: const TextStyle(
-                        color: Colors.black87,
-                        fontFamily: 'OpenSans',
-                      ),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, bottom: 7),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-  
-                  IconButton(
-                    color: Colors.black54,
-                    onPressed: () async {
-                      String? token = await const FlutterSecureStorage().read(key: 'token');
-                      createComment(widget.post, token!, CommentModel("abc"));
-                    },
-                    icon: const Icon(
-                      Icons.send,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
-              ),
+          child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              color: Colors.white,
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: TextFormField(
+                    controller: postController.commentController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    //controller: commentController.commentTextController,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontFamily: 'OpenSans',
+                    ),
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 10, bottom: 7),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  color: Colors.black54,
+                  onPressed: () async {
+                    await createComment(
+                      widget.post.postID!,
+                      CommentModel(postController.commentController.text, ""),
+                      postController.token!,
+                    );
+                    postController.getList();
+                    postController.commentController.text = "";
+                  },
+                  icon: const Icon(
+                    Icons.send,
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

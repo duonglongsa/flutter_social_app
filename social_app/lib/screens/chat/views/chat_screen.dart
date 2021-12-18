@@ -6,7 +6,6 @@ import 'package:social_app/screens/chat/views/chat_message.dart';
 import 'options_screen.dart';
 
 
-
 class ChatScreen extends StatefulWidget {
   @override
   _ChatScreenState createState() => _ChatScreenState();
