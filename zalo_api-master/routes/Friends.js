@@ -13,6 +13,6 @@ friendsRoutes.post("/set-remove", auth, friendController.setRemoveFriend);
 
 friendsRoutes.post("/list", auth, friendController.listFriends);
 
-// friendsRoutes.post("/searchFriends",auth, friendController.searchFriends)
+friendsRoutes.post("/search-users",auth, friendController.searchUsers)
 
 module.exports = friendsRoutes;
