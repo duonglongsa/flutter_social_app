@@ -6,13 +6,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:social_app/models/comment_model.dart';
 import 'package:social_app/models/post.dart';
-import 'package:social_app/screens/create_post/controllers/create_post_controller.dart';
+import 'package:social_app/controllers/post/create_post_controller.dart';
 import 'package:social_app/screens/template_widget.dart';
 import 'package:social_app/services/comment_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import 'post_controller.dart';
+import '../../controllers/post/post_controller.dart';
 
 class PostScreen extends StatefulWidget {
   final Post post;

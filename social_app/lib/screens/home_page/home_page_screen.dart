@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
-import 'package:social_app/screens/create_post/views/create_post_screen.dart';
-import 'package:social_app/screens/home_page/controller/home_controller.dart';
+import 'package:social_app/screens/create_post/create_post_screen.dart';
+import 'package:social_app/controllers/home/home_controller.dart';
 import 'package:social_app/screens/view_post_screen/post_creen.dart';
-import 'package:social_app/screens/sign_in/controller/signin_controller.dart';
-import 'package:social_app/screens/sign_in/views/signin_screen_widgets.dart';
+import 'package:social_app/controllers/signin_controller.dart';
+import 'package:social_app/screens/sign_in/signin_screen_widgets.dart';
 import 'package:social_app/screens/template_widget.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';

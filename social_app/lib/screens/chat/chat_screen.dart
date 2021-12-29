@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:social_app/models/message_model.dart';
-import 'package:social_app/screens/chat/controllers/chat_controller.dart';
+import 'package:social_app/controllers/chat/chat_controller.dart';
 import 'package:social_app/services/chat_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'chat_message.dart';

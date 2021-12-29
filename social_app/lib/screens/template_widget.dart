@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:social_app/models/comment_model.dart';
 import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
-import 'package:social_app/screens/home_page/controller/home_controller.dart';
+import 'package:social_app/controllers/home/home_controller.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
