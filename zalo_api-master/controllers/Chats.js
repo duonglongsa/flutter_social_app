@@ -97,4 +97,24 @@ chatController.getMessages = async (req, res, next) => {
     }
 }
 
+// [POST] chats/getConversationList
+chatController.getConversationList = async (req, res,next) => {
+    const userId = req.userId;
+
+    try{
+        const conversation = await ChatModel.find({ 
+            member: {$in: [userId]}
+        })
+
+        //conversation se la 1 mang cac cuoc hoi thoai,
+        res.status(200).json({
+            message: "fetching use conversation",
+            data: conversation
+        })
+    }catch(err){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
+    }
+
+}
+
 module.exports = chatController;

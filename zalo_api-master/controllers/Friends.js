@@ -92,7 +92,7 @@ friendsController.setAccept = async (req, res, next) => {
         let friend = await FriendModel.findOne({ sender: sender, receiver: receiver });
 
         if (req.body.is_accept != '1' && req.body.is_accept != '2') {
-            res.status(200).json({
+            res.status(400).json({
                 code: 200,
                 message: "Không đúng yêu cầu",
                 data: friend,
@@ -100,7 +100,7 @@ friendsController.setAccept = async (req, res, next) => {
             });
         }
         if (friend.status == '1' && req.body.is_accept == '2') {
-            res.status(200).json({
+            res.status(400).json({
                 code: 200,
                 message: "Không đúng yêu cầu",
                 data: friend,
@@ -176,6 +176,17 @@ friendsController.listFriends = async (req, res, next) => {
             let accepted = await FriendModel.find({receiver: req.userId, status: "1" }).distinct('sender')
 
             let users = await UserModel.find().where('_id').in(requested.concat(accepted)).populate('avatar').populate('cover_image').exec()
+            
+            // let userList;
+            // find search keyword
+            let keyword = req.body.keyword;
+            if(keyword){
+                console.log('keyword', keyword);
+                users = users.filter(u =>u.username.includes(keyword));
+                
+            }
+
+            console.log('user in search user: ', users);
 
             res.status(200).json({
                 code: 200,
@@ -184,7 +195,8 @@ friendsController.listFriends = async (req, res, next) => {
                     friends: users,
                 }
             });
-        }
+        } 
+
 
     } catch (e) {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
