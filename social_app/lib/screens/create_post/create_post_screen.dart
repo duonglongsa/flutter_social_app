@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:social_app/screens/create_post/controllers/create_post_controller.dart';
+import 'package:social_app/controllers/post/create_post_controller.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 class CreatePostScreen extends StatefulWidget {
