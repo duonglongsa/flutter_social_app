@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:get/get.dart';
 
 class User {
   String ?avatar;
@@ -9,6 +6,8 @@ class User {
   String? phoneNumber;
   String ?password;
   String ?token;
+
+  DateTime? timeRequested;
 
   User(this.name, this.phoneNumber, this.password);
   
@@ -25,6 +24,10 @@ class User {
         phoneNumber = json['phonenumber'],
         id = json['_id'];
 
+  User.fromFriendRequestJson(Map<String, dynamic> json)
+      : name = json['username'],
+        timeRequested = DateTime.parse(json['createdAt']),
+        id = json['_id'];
   
 
   // Map<String, dynamic> toJson() => {

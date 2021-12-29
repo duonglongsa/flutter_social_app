@@ -1,11 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:social_app/models/comment_model.dart';
 import 'package:social_app/models/post.dart';
 import 'package:http/http.dart' as http;
-import 'package:async/async.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:social_app/utilities/configs.dart';
 
 //todo: chinh lai api de fetch

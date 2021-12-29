@@ -20,88 +20,73 @@ Widget createPostWidget({
     child: Container(
       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 0.0),
       color: cointainerColor,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              const CircleAvatar(
-                backgroundColor: Colors.blueAccent,
-              ),
-              const SizedBox(width: 8.0),
-              Expanded(
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: 'What\'s on your mind?',
-                    hintStyle: kHintTextStyle,
-                  ),
+      child: InkWell(
+        onTap: (){onCreatePost();},
+        child: Column(
+          children: [
+            Row(
+              children: const [
+                CircleAvatar(
+                  backgroundColor: Colors.blueAccent,
                 ),
-              )
-            ],
-          ),
-          const Divider(
-            height: 10.0,
-            thickness: 0.5,
-            color: Colors.white70,
-          ),
-          Container(
-            height: 40.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FlatButton.icon(
-                  onPressed: () => print('Photo'),
-                  icon: const Icon(
-                    Icons.photo_library,
-                    color: Colors.green,
-                  ),
-                  label: const Text(
-                    'Photo',
-                    style: TextStyle(
-                      color: Colors.white,
+                SizedBox(width: 8.0),
+                Expanded(
+                  child: TextField(
+                    enabled: false,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration.collapsed(
+                      hintText: 'What\'s on your mind?',
+                      hintStyle: kHintTextStyle,
                     ),
                   ),
-                ),
-                const VerticalDivider(
-                  width: 8.0,
-                  color: Colors.white70,
-                ),
-                FlatButton.icon(
-                  onPressed: () => print('Video'),
-                  icon: const Icon(
-                    Icons.video_library,
-                    color: Colors.purpleAccent,
-                  ),
-                  label: const Text(
-                    'Video',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const VerticalDivider(
-                  width: 8.0,
-                  color: Colors.white70,
-                ),
-                FlatButton.icon(
-                  onPressed: () async {
-                    onCreatePost();
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.purpleAccent,
-                  ),
-                  label: const Text(
-                    'Post',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                )
               ],
             ),
-          ),
-        ],
+            const Divider(
+              height: 10.0,
+              thickness: 0.5,
+              color: Colors.white70,
+            ),
+            SizedBox(
+              height: 40.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FlatButton.icon(
+                    onPressed: () => print('Photo'),
+                    icon: const Icon(
+                      Icons.photo_library,
+                      color: Colors.green,
+                    ),
+                    label: const Text(
+                      'Photo',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const VerticalDivider(
+                    width: 8.0,
+                    color: Colors.white70,
+                  ),
+                  FlatButton.icon(
+                    onPressed: () => print('Video'),
+                    icon: const Icon(
+                      Icons.video_library,
+                      color: Colors.purpleAccent,
+                    ),
+                    label: const Text(
+                      'Video',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -167,8 +152,7 @@ Widget post(
                       ),
                       onPressed: () async {
                         String? currentUserId = await FlutterSecureStorage().read(key: 'userId');
-                        print(currentUserId);
-                        print(post.postUser!.id);
+                        
                         if(currentUserId == post.postUser!.id){
                           return _showPostOption(context, post.postID!);
                         } else {

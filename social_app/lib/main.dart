@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:social_app/screens/user_profile/views/user_profile_screen.dart';
+import 'package:social_app/screens/user_profile/user_profile_screen.dart';
 
 import 'screens/sign_in/signin_screen.dart';
 
@@ -39,6 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    return UserProfileScreen();
+    return SigninScreen();
   }
 }

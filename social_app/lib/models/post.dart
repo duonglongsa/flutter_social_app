@@ -31,4 +31,5 @@ class Post {
         countLikes = (json["like"] as List).length,
         likedUserId = json["like"],
         isLike = json["isLike"];
+
 }

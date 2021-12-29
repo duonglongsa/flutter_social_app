@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social_app/screens/chat/chat_screen.dart';
+import 'package:social_app/screens/friends/friends_screen.dart';
 import 'package:social_app/screens/home_page/home_page_screen.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
@@ -13,8 +14,8 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     HomePageScreen(),
-    Scaffold(),
-    ContactsScreen(),
+    FriendScreen(),
+    ChatScreen(),
     Scaffold(),
   ];
   final List<IconData> _icons = const [

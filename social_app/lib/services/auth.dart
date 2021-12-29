@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/utilities/configs.dart';
 

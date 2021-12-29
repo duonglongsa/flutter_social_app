@@ -19,6 +19,9 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   HomeController homeController = Get.put(HomeController());
+  bool _showBackToTopButton = false;
+
+  ScrollController? _scrollController;
 
   Future initController() async {
     await homeController.getUserInfo();
@@ -29,109 +32,92 @@ class _HomePageScreenState extends State<HomePageScreen> {
   void initState() {
     super.initState();
     initController();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        setState(() {
+          if (_scrollController!.offset >= 400) {
+            _showBackToTopButton = true; // show the back-to-top button
+          } else {
+            _showBackToTopButton = false; // hide the back-to-top button
+          }
+        });
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        /* appBar: AppBar(
-          automaticallyImplyLeading: false,
-        ),*/
         backgroundColor: backGroundColor,
-        //resizeToAvoidBottomInset: false,
-        body: CustomScrollView(
-          shrinkWrap: true,
-          slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              brightness: Brightness.light,
-              backgroundColor: cointainerColor,
-              title: const Text(
-                'News feed',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28.0,
-                  letterSpacing: -1.2,
-                ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: cointainerColor,
+          title: const Text(
+            'News feed',
+          ),
+          centerTitle: false,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+                size: 30.0,
               ),
-              centerTitle: false,
-              floating: true,
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.search,
-                    size: 30.0,
-                  ),
-                  onPressed: () => print('Search'),
+              onPressed: () => print('Search'),
+            ),
+          ],
+        ), //resizeToAvoidBottomInset: false,
+        body: RefreshIndicator(
+          onRefresh: () => homeController.getList(),
+          backgroundColor: backGroundColor,
+          child: SingleChildScrollView(
+            //controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                createPostWidget(
+                  onCreatePost: () {
+                    Get.to(() => const CreatePostScreen());
+                  },
                 ),
+                GetBuilder<HomeController>(
+                    init: homeController,
+                    builder: (context) {
+                      if (homeController.postList == null) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: homeController.postList!.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () => Get.to(() => PostScreen(
+                                    post: homeController.postList![index],
+                                  )),
+                              child: post(
+                                postColor: cointainerColor,
+                                context: context,
+                                post: homeController.postList![index],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    }),
               ],
             ),
-            SliverToBoxAdapter(
-              child: createPostWidget(
-                onCreatePost: () {
-                  Get.to(() => const CreatePostScreen());
-                },
-              ),
-            ),
-            SliverFillRemaining(
-              child: GetBuilder<HomeController>(
-                init: homeController,
-                builder: (_) {
-                  if (homeController.postList == null) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    return RefreshIndicator(
-                      onRefresh: () => homeController.getList(),
-                      backgroundColor: backGroundColor,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: homeController.postList!.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () => Get.to(() => PostScreen(
-                                  post: homeController.postList![index],
-                                )),
-                            child: post(
-                              postColor: cointainerColor,
-                              context: context,
-                              post: homeController.postList![index],
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-            // homeController.postList != null
-            //     ? SliverList(
-            //         delegate: SliverChildBuilderDelegate(
-            //           (context, index) {
-            //             return post(
-            //               userName:
-            //                   homeController.postList![index].postUser!.name!,
-            //               avatar: NetworkImage(
-            //                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlHidJs9A2sNkuM9gCih3fO49j6D8gEAZuzg&usqp=CAU"),
-            //               timeAgo: homeController.postList![index].timeCreated!,
-            //               caption: homeController.postList![index].described,
-            //               image: Image.network(
-            //                   "https://memehay.com/meme/20210924/troll-mu-cup-trong-long-nguoi-ham-mo-la-chiec-cup-quy-gia-nhat.jpg"),
-            //             );
-            //           },
-            //           childCount: homeController.postList!.length,
-            //         ),
-            //       )
-            //     : const SliverToBoxAdapter(
-            //         child: SizedBox(
-            //             width: 40,
-            //             height: 40,
-            //             child: CircularProgressIndicator()),
-            //       )
-          ],
+          ),
         ),
-      
+        floatingActionButton: _showBackToTopButton == false
+            ? null
+            : FloatingActionButton(
+                onPressed: () {
+                  _scrollController!.animateTo(0,
+                      duration: Duration(seconds: 1), curve: Curves.linear);
+                },
+                child: Icon(Icons.arrow_upward),
+              ),
       ),
     );
   }
