@@ -5,8 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_app/models/post.dart';
-import 'package:social_app/screens/create_post/views/create_post_screen.dart';
-import 'package:social_app/screens/home_page/views/home_page_screen.dart';
+import 'package:social_app/screens/create_post/create_post_screen.dart';
+import 'package:social_app/screens/home_page/home_page_screen.dart';
 import 'package:social_app/services/auth.dart';
 import 'package:social_app/services/post_service.dart';
 

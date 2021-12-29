@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social_app/controllers/home/home_controller.dart';
 import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
-import 'package:social_app/screens/create_post/views/create_post_screen.dart';
-import 'package:social_app/screens/home_page/controller/home_controller.dart';
 import 'package:social_app/screens/template_widget.dart';
-import 'package:social_app/screens/view_post_screen/post_creen.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 class UserProfileScreen extends StatefulWidget {
