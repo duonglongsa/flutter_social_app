@@ -13,7 +13,7 @@ class Story extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
             border: Border.all(color: Colors.blue, width: 3)),
         child: CircleAvatar(
-          radius: 30,
+          radius: 28,
           backgroundColor: Colors.grey[300],
           backgroundImage: AssetImage("lib/assets/$img"),
         ),

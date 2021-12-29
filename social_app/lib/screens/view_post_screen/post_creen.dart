@@ -147,6 +147,7 @@ class _PostScreenState extends State<PostScreen> {
                     );
                     postController.getList();
                     postController.commentController.text = "";
+                    FocusScope.of(context).unfocus();
                   },
                   icon: const Icon(
                     Icons.send,

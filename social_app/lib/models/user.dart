@@ -6,11 +6,13 @@ class User {
   String ?avatar;
   String ?id;
   String ?name;
-  final String phoneNumber;
+  String? phoneNumber;
   String ?password;
   String ?token;
 
   User(this.name, this.phoneNumber, this.password);
+  
+  User.id(this.id);
 
   User.fromLoginJson(Map<String, dynamic> json)
       : name = json['data']['username'],
@@ -22,6 +24,8 @@ class User {
       : name = json['username'],
         phoneNumber = json['phonenumber'],
         id = json['_id'];
+
+  
 
   // Map<String, dynamic> toJson() => {
   //       'username': name,

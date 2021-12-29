@@ -28,21 +28,20 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   void initState() {
     super.initState();
-    print("init");
     initController();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build");
     return SafeArea(
       child: Scaffold(
         /* appBar: AppBar(
           automaticallyImplyLeading: false,
         ),*/
         backgroundColor: backGroundColor,
-        resizeToAvoidBottomInset: false,
+        //resizeToAvoidBottomInset: false,
         body: CustomScrollView(
+          shrinkWrap: true,
           slivers: [
             SliverAppBar(
               automaticallyImplyLeading: false,
@@ -86,10 +85,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       onRefresh: () => homeController.getList(),
                       backgroundColor: backGroundColor,
                       child: ListView.builder(
+                        shrinkWrap: true,
                         itemCount: homeController.postList!.length,
                         itemBuilder: (context, index) {
                           return InkWell(
-                            onTap: () => Get.to(() => PostScreen(post: homeController.postList![index],)),
+                            onTap: () => Get.to(() => PostScreen(
+                                  post: homeController.postList![index],
+                                )),
                             child: post(
                               postColor: cointainerColor,
                               context: context,
@@ -129,6 +131,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
             //       )
           ],
         ),
+      
       ),
     );
   }

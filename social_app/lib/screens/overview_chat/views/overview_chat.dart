@@ -128,31 +128,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
             SizedBox(
               height: 10,
             ),
-            SingleChildScrollView(
-              child: Column(
-                children: [
+            Container(
+              height: 450,
+              child: ListView(
+                children: <Widget>[
                   Conversation(
                       image: "anh1.png",
-                      name: "Your Name",
-                      msg: "Hello what is your name?",
-                      isRead: true),
-                  Conversation(
-                      image: "anh2.png",
-                      name: "Your Name",
-                      msg: "Hello what is your name?",
-                      isRead: false),
-                  Conversation(
-                      image: "anh3.png",
-                      name: "Your Name",
-                      msg: "Hello what is your name?",
-                      isRead: true),
-                  Conversation(
-                      image: "anh4.png",
-                      name: "Your Name",
-                      msg: "Hello what is your name?",
-                      isRead: false),
-                  Conversation(
-                      image: "anh5.png",
                       name: "Your Name",
                       msg: "Hello what is your name?",
                       isRead: true),
@@ -162,17 +143,52 @@ class _ContactsScreenState extends State<ContactsScreen> {
                       msg: "Hello what is your name?",
                       isRead: true),
                   Conversation(
-                      image: "anh2.png",
+                      image: "anh1.png",
                       name: "Your Name",
                       msg: "Hello what is your name?",
                       isRead: true),
                   Conversation(
-                      image: "jpg2.jpg",
+                      image: "anh1.png",
                       name: "Your Name",
                       msg: "Hello what is your name?",
                       isRead: true),
                   Conversation(
-                      image: "anh3.png",
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
+                      name: "Your Name",
+                      msg: "Hello what is your name?",
+                      isRead: true),
+                  Conversation(
+                      image: "anh1.png",
                       name: "Your Name",
                       msg: "Hello what is your name?",
                       isRead: true),
@@ -180,6 +196,55 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ),
             ),
           ])),
+      bottomSheet: Container(
+        color: Color(0xFF152238),
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: Colors.white,
+          ),
+          // child: Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: [
+          //     Flexible(
+          //       child: TextFormField(
+          //         // controller: postController.commentController,
+          //         keyboardType: TextInputType.multiline,
+          //         maxLines: null,
+          //         //controller: commentController.commentTextController,
+          //         style: const TextStyle(
+          //           color: Colors.black87,
+          //           fontFamily: 'OpenSans',
+          //         ),
+          //         decoration: const InputDecoration(
+          //           contentPadding: EdgeInsets.only(left: 10, bottom: 7),
+          //           border: InputBorder.none,
+          //         ),
+          //       ),
+          //     ),
+          //     // IconButton(
+          //     //   color: Colors.black54,
+          //     //   onPressed: () async {
+          //     //     await createComment(
+          //     //       widget.post.postID!,
+          //     //       CommentModel(postController.commentController.text, ""),
+          //     //       postController.token!,
+          //     //     );
+          //     //     postController.getList();
+          //     //     postController.commentController.text = "";
+          //     //     FocusScope.of(context).unfocus();
+          //     //   },
+          //     //   icon: const Icon(
+          //     //     Icons.send,
+          //     //     color: Colors.blue,
+          //     //   ),
+          //     // ),
+          //   ],
+          // ),
+        ),
+      ),
     );
   }
 }
