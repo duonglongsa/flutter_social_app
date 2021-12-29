@@ -1,4 +1,6 @@
+
 import 'dart:async';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +11,8 @@ import 'package:social_app/services/chat_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'chat_message.dart';
 import 'options_screen.dart';
+
+
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -32,6 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Row(
           children: [
+
             IconButton(
                 onPressed: () async {
                   chatController.onInit();
@@ -62,6 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
             bottom: Radius.circular(10),
           ),
         ),
+
       ),
       body: Column(
         children: [
