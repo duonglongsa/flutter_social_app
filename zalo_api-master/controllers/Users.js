@@ -348,7 +348,9 @@ usersController.setBlockDiary = async (req, res, next) => {
 
 usersController.searchUser = async (req, res, next) => {
     let searchKey = new RegExp(req.body.keyword, 'i')
-    if(validator.isMobilePhone(searchKey+'') ){
+    if(validator.isMobilePhone(req.body.keyword+'') ){
+        console.log('search by phone: ', searchKey);
+
         try {
             let result = await UserModel.find({phonenumber: searchKey}).limit(10).populate('avatar').populate('cover_image').exec();
     
