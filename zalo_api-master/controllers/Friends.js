@@ -208,8 +208,9 @@ friendsController.listFriends = async (req, res, next) => {
 friendsController.searchUsers = async (req,res,next) => {
     const keyword = req.body.keyword;
     // const page = 
+    
     try{
-        const users = await UserModel.find({username: {$regex: keyword}}).limit(30);
+        const users = await UserModel.find({username: {$regex: keyword,'$options' : 'i'}}).limit(30);
         console.log("users.length", users.length);
         // console.log('user list: ', users)
 

@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const {JWT_SECRET} = require("../constants/constants");
 const uploadFile = require('../functions/uploadFile');
 const usersController = {};
+const validator = require('validator');
 
 usersController.register = async (req, res, next) => {
     try {
@@ -344,22 +345,59 @@ usersController.setBlockDiary = async (req, res, next) => {
         });
     }
 }
+
 usersController.searchUser = async (req, res, next) => {
-    try {
-        let searchKey = new RegExp(req.body.keyword, 'i')
-        let result = await UserModel.find({phonenumber: searchKey}).limit(10).populate('avatar').populate('cover_image').exec();
-
-        res.status(200).json({
-            code: 200,
-            message: "Tìm kiếm thành công",
-            data: result
-        });
-
-    } catch (e) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            message: e.message
-        });
+    let searchKey = new RegExp(req.body.keyword, 'i')
+    if(validator.isMobilePhone(searchKey+'') ){
+        try {
+            let result = await UserModel.find({phonenumber: searchKey}).limit(10).populate('avatar').populate('cover_image').exec();
+    
+            res.status(200).json({
+                code: 200,
+                message: "Tìm kiếm thành công",
+                data: result
+            });
+    
+        } catch (e) {
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+                message: e.message
+            });
+        }
+    } else{
+        console.log('search by name: ', searchKey);
+        try{
+            const users = await UserModel.find({username: searchKey}).limit(30).populate('avatar').populate('cover_image').exec();
+            console.log("users.length", users.length);
+            // console.log('user list: ', users)
+    
+            res.status(200).json({
+                data: users,
+            })
+    
+    
+    
+        }catch(err){
+            res.status(500).json(err)
+        }
     }
 }
+
+// usersController.searchUser = async (req, res, next) => {
+//     try {
+//         let searchKey = new RegExp(req.body.keyword, 'i')
+//         let result = await UserModel.find({phonenumber: searchKey}).limit(10).populate('avatar').populate('cover_image').exec();
+
+//         res.status(200).json({
+//             code: 200,
+//             message: "Tìm kiếm thành công",
+//             data: result
+//         });
+
+//     } catch (e) {
+//         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+//             message: e.message
+//         });
+//     }
+// }
 
 module.exports = usersController;
