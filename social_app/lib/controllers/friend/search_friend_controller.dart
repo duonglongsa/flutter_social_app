@@ -10,10 +10,11 @@ class SearchFriendController extends GetxController {
 
   final  storage = const FlutterSecureStorage();
   String ?userId, token;
+  bool isLoading = false;
 
   TextEditingController searchTextConntroller = TextEditingController();
 
-  List<User>? searchList;
+  List<User>? searchFriendList, searchUserList;
  
   @override
   void onInit() async {
@@ -22,8 +23,12 @@ class SearchFriendController extends GetxController {
     token = await storage.read(key: "token");
   }
 
-  Future getSearchList() async {
-    searchList = await getSearchFriendList(token!, searchTextConntroller.text);
+  Future getSearchList(String val) async {
+    isLoading = true;
+    update();
+    searchFriendList = await getSearchFriendList(token!, val);
+    searchUserList = await getSearchUserList(token!, val);
+    isLoading = false;
     update();
   }
 

@@ -12,13 +12,25 @@ class SearchFriendScreen extends StatefulWidget {
   _SearchFriendScreenState createState() => _SearchFriendScreenState();
 }
 
-class _SearchFriendScreenState extends State<SearchFriendScreen> {
+class _SearchFriendScreenState extends State<SearchFriendScreen>  with TickerProviderStateMixin{
   SearchFriendController searchFriendController =
       Get.put(SearchFriendController());
+
+  late TabController _tabController;
+
+  final List<Tab> tabs = <Tab>[
+    const Tab(
+      text: "Friends",
+    ),
+    const Tab(
+      text: "All",
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: tabs.length, vsync: this);
   }
 
   // ···
@@ -32,17 +44,13 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
         title: Container(
           decoration: BoxDecoration(
               color: Colors.grey[200], borderRadius: BorderRadius.circular(25)),
-          child: const Padding(
-            padding: EdgeInsets.only(left: 12),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12),
             child: TextField(
-              onSubmitted: (val) {
-                setState(() {
-                  _items.add(val);
-                });
-                myController.clear();
-                myFocusNode.requestFocus();
+              onSubmitted: (val) async {
+                await searchFriendController.getSearchList(val);
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   hintText: "Search",
                   border: InputBorder.none,
                   icon: Icon(Icons.search)),
@@ -64,19 +72,53 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                   return SingleChildScrollView(
                     child: Column(
                       children: [
-                        if (searchFriendController.searchList != null)
-                          ListView.builder(
+                         DefaultTabController(
+                          length: tabs.length,
+                          child: TabBar(
+                            controller: _tabController,
+                            onTap: (index) async {
+                              setState(() {
+                                _tabController.index = index;
+                              });
+                            },
+                            labelColor: Colors.blue,
+                            unselectedLabelColor: Colors.grey,
+                            tabs: tabs,
+                          ),
+                        ),
+                        if (searchFriendController.searchFriendList != null && _tabController.index == 0)
+                          !searchFriendController.isLoading ? ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount:
-                                searchFriendController.searchList!.length,
+                                searchFriendController.searchFriendList!.length,
                             itemBuilder: (context, index) {
                               return InkWell(
                                   onTap: () => {},
                                   child: _searchCard(
                                       user: searchFriendController
-                                          .searchList![index]));
+                                          .searchFriendList![index]));
                             },
+                          ) :const Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: CircularProgressIndicator(),
+                          ),
+                           if (searchFriendController.searchFriendList != null && _tabController.index == 1)
+                          !searchFriendController.isLoading ? ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount:
+                                searchFriendController.searchUserList!.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                  onTap: () => {},
+                                  child: _searchCard(
+                                      user: searchFriendController
+                                          .searchUserList![index]));
+                            },
+                          ) :const Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: CircularProgressIndicator(),
                           ),
                       ],
                     ),

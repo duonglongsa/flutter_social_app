@@ -52,7 +52,7 @@ class _FriendScreenState extends State<FriendScreen>
               Icons.search,
               size: 30.0,
             ),
-            onPressed: () => Get.to(() => SearchFriendScreen()),
+            onPressed: () => Get.to(() => const SearchFriendScreen()),
           ),
         ],
       ),

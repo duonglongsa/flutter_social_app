@@ -17,6 +17,7 @@ Widget createPostWidget({
   required VoidCallback onCreatePost,
 }) {
   return Card(
+    elevation: 5,
     child: Container(
       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 0.0),
       color: cointainerColor,
@@ -97,6 +98,7 @@ Widget post(
     required Post post,
     required Color postColor}) {
   return Card(
+    elevation: 5,
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       color: postColor,
