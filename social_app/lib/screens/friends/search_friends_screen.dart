@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:social_app/controllers/friend/friend_screen_controller.dart';
+import 'package:social_app/controllers/friend/search_friend_controller.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -13,7 +13,8 @@ class SearchFriendScreen extends StatefulWidget {
 }
 
 class _SearchFriendScreenState extends State<SearchFriendScreen> {
-  FriendController friendController = Get.put(FriendController());
+  SearchFriendController searchFriendController =
+      Get.put(SearchFriendController());
 
   @override
   void initState() {
@@ -34,6 +35,13 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
           child: const Padding(
             padding: EdgeInsets.only(left: 12),
             child: TextField(
+              onSubmitted: (val) {
+                setState(() {
+                  _items.add(val);
+                });
+                myController.clear();
+                myFocusNode.requestFocus();
+              },
               decoration: InputDecoration(
                   hintText: "Search",
                   border: InputBorder.none,
@@ -50,13 +58,26 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
               color: backGroundColor,
               height: double.infinity,
             ),
-            GetBuilder<FriendController>(
-                init: friendController,
+            GetBuilder<SearchFriendController>(
+                init: searchFriendController,
                 builder: (context) {
                   return SingleChildScrollView(
                     child: Column(
                       children: [
-                        
+                        if (searchFriendController.searchList != null)
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount:
+                                searchFriendController.searchList!.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                  onTap: () => {},
+                                  child: _searchCard(
+                                      user: searchFriendController
+                                          .searchList![index]));
+                            },
+                          ),
                       ],
                     ),
                   );
@@ -66,7 +87,8 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       ),
     ));
   }
-  Widget _friendCard({required User user}) {
+
+  Widget _searchCard({required User user}) {
     return Card(
       elevation: 5,
       color: cointainerColor,
