@@ -181,12 +181,12 @@ friendsController.listFriends = async (req, res, next) => {
             // find search keyword
             let keyword = req.body.keyword;
             if(keyword){
-                console.log('keyword', keyword);
+                // console.log('keyword', keyword);
                 users = users.filter(u =>u.username.includes(keyword));
                 
             }
 
-            console.log('user in search user: ', users);
+            // console.log('user in search user: ', users);
 
             res.status(200).json({
                 code: 200,
@@ -203,6 +203,26 @@ friendsController.listFriends = async (req, res, next) => {
             message: e.message
         });
     }
+}
+
+friendsController.searchUsers = async (req,res,next) => {
+    const keyword = req.body.keyword;
+    // const page = 
+    try{
+        const users = await UserModel.find({username: {$regex: keyword}}).limit(30);
+        console.log("users.length", users.length);
+        // console.log('user list: ', users)
+
+        res.status(200).json({
+            data: users,
+        })
+
+
+
+    }catch(err){
+        res.status(500).json(err)
+    }
+
 }
 
 
