@@ -61,7 +61,7 @@ Future<List<User>> getSearchFriendList(String token, String keyword) async {
 
 Future<List<User>> getSearchUserList(String token, String keyword) async {
   var res =
-      await http.post(Uri.parse(localhost + "/v1//friends/search-users"), headers: {
+      await http.post(Uri.parse(localhost + "/v1/users/search"), headers: {
     'Context-Type': 'application/json;charSet=UTF-8',
     'Authorization': 'Bearer $token',
     'Accept': 'application/json',
@@ -69,6 +69,7 @@ Future<List<User>> getSearchUserList(String token, String keyword) async {
     'keyword': keyword
   });
   var responseJson = json.decode(res.body);
+  print(responseJson);
   return (responseJson["data"] as List)
       .map((p) => User.fromFriendRequestJson(p))
       .toList();
