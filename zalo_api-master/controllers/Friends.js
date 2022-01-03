@@ -19,8 +19,8 @@ friendsController.setRequest = async (req, res, next) => {
         let checkBack = await FriendModel.findOne({ sender: receiver, receiver: sender });
         if (checkBack != null) {
             if (checkBack.status == '0' || checkBack.status == '1') {
-                return res.status(200).json({
-                    code: 200,
+                return res.status(401).json({
+                    code: 401,
                     status: 'error',
                     success: false,
                     message: "Đối phương đã gửi lời mời kết bạn hoặc đã là bạn",
@@ -33,8 +33,8 @@ friendsController.setRequest = async (req, res, next) => {
         let isFriend = await FriendModel.findOne({ sender: sender, receiver: receiver });
         if(isFriend != null){
             if (isFriend.status == '1') {
-                return res.status(200).json({
-                    code: 200,
+                return res.status(401).json({
+                    code: 401,
                     success: false,
                     message: "Đã gửi lời mời kết bạn trước đó",
                 });

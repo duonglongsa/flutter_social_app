@@ -20,11 +20,19 @@ postsController.create = async (req, res, next) => {
             videos,
         } = req.body;
         let dataImages = [];
+        console.log('anh o day');
+
+        
         if (Array.isArray(images)) {
+            console.log('anh la array');
             for (const image of images) {
                 if (uploadFile.matchesFileBase64(image) !== false) {
+                    console.log('anh la match file base 64');
+
                     const imageResult = uploadFile.uploadFile(image);
                     if (imageResult !== false) {
+                        console.log('anh upload');
+
                         let imageDocument = new DocumentModel({
                             fileName: imageResult.fileName,
                             fileSize: imageResult.fileSize,
