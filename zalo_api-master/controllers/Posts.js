@@ -15,13 +15,18 @@ postsController.create = async (req, res, next) => {
     let userId = req.userId;
     try {
         const {
-            described,
-            images,
+            described,            
             videos,
         } = req.body;
+        let images = req.body.images;
         let dataImages = [];
+        images = images.slice(1);
+        images = images.slice(0,-1);
+        images = images.split('","');
         if (Array.isArray(images)) {
-            for (const image of images) {
+            for (let image of images) {
+                image = image.slice(1);
+                image = image.slice(0,-1);
                 if (uploadFile.matchesFileBase64(image) !== false) {
                     const imageResult = uploadFile.uploadFile(image);
                     if (imageResult !== false) {

@@ -14,12 +14,12 @@ class CreatePostScreen extends StatefulWidget {
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
-
-  final CreatePostController createPostController = Get.put(CreatePostController());
+  final CreatePostController createPostController =
+      Get.put(CreatePostController());
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(  
+    return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
@@ -73,12 +73,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         border: InputBorder.none,
                       ),
                     ),
-                   
                     GetBuilder(
                       init: createPostController,
-                      builder: (_) => createPostController.imagePath != ''? 
-                      Image.file(File(createPostController.imagePath)) 
-                      : Container(color: backGroundColor,),
+                      builder: (_) => createPostController.imagePath != []
+                          ? ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: createPostController.imagePath.length,
+                              itemBuilder: (context, index) {
+                                return Image.file(
+                                    createPostController.imagePath[index]);
+                              },
+                            )
+                          : Container(
+                              color: backGroundColor,
+                            ),
                     ),
                   ],
                 ),
@@ -93,7 +102,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FlatButton.icon(
-                onPressed: ()  => createPostController.pickImage(),
+                onPressed: () => createPostController.pickImage(),
                 icon: const Icon(
                   Icons.photo_library,
                   color: Colors.green,

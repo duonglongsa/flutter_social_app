@@ -12,7 +12,8 @@ class SearchFriendScreen extends StatefulWidget {
   _SearchFriendScreenState createState() => _SearchFriendScreenState();
 }
 
-class _SearchFriendScreenState extends State<SearchFriendScreen>  with TickerProviderStateMixin{
+class _SearchFriendScreenState extends State<SearchFriendScreen>
+    with TickerProviderStateMixin {
   SearchFriendController searchFriendController =
       Get.put(SearchFriendController());
 
@@ -72,7 +73,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen>  with TickerPro
                   return SingleChildScrollView(
                     child: Column(
                       children: [
-                         DefaultTabController(
+                        DefaultTabController(
                           length: tabs.length,
                           child: TabBar(
                             controller: _tabController,
@@ -86,40 +87,48 @@ class _SearchFriendScreenState extends State<SearchFriendScreen>  with TickerPro
                             tabs: tabs,
                           ),
                         ),
-                        if (searchFriendController.searchFriendList != null && _tabController.index == 0)
-                          !searchFriendController.isLoading ? ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount:
-                                searchFriendController.searchFriendList!.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                  onTap: () => {},
-                                  child: _searchCard(
-                                      user: searchFriendController
-                                          .searchFriendList![index]));
-                            },
-                          ) :const Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: CircularProgressIndicator(),
-                          ),
-                           if (searchFriendController.searchFriendList != null && _tabController.index == 1)
-                          !searchFriendController.isLoading ? ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount:
-                                searchFriendController.searchUserList!.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                  onTap: () => {},
-                                  child: _searchCard(
-                                      user: searchFriendController
-                                          .searchUserList![index]));
-                            },
-                          ) :const Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: CircularProgressIndicator(),
-                          ),
+                        if (searchFriendController.searchFriendList != null &&
+                            _tabController.index == 0)
+                          !searchFriendController.isLoading
+                              ? ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: searchFriendController
+                                      .searchFriendList!.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                        onTap: () => {},
+                                        child: _searchCard(
+                                            user: searchFriendController
+                                                .searchFriendList![index]));
+                                  },
+                                )
+                              : const Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: CircularProgressIndicator(),
+                                ),
+                        if (searchFriendController.searchFriendList != null &&
+                            _tabController.index == 1)
+                          !searchFriendController.isLoading
+                              ? ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: searchFriendController
+                                      .searchUserList!.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () => {},
+                                      child: _searchCard(
+                                          user: searchFriendController
+                                              .searchUserList![index],
+                                          isFriend: false),
+                                    );
+                                  },
+                                )
+                              : const Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: CircularProgressIndicator(),
+                                ),
                       ],
                     ),
                   );
@@ -130,19 +139,26 @@ class _SearchFriendScreenState extends State<SearchFriendScreen>  with TickerPro
     ));
   }
 
-  Widget _searchCard({required User user}) {
-    return Card(
-      elevation: 5,
-      color: cointainerColor,
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: AssetImage("lib/assets/avatar.jpg"),
+  Widget _searchCard({required User user, bool isFriend = true}) {
+    return InkWell(
+      onTap: () async {
+        if (!isFriend) {
+          await searchFriendController.addFriend(user.id!);
+        }
+      },
+      child: Card(
+        elevation: 5,
+        color: cointainerColor,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: AssetImage("lib/assets/avatar.jpg"),
+          ),
+          title: Text(
+            user.name!,
+            style: kLabelStyle,
+          ),
+          //trailing: TextButton(onPressed: () {}, child: Text("Add")),
         ),
-        title: Text(
-          user.name!,
-          style: kLabelStyle,
-        ),
-        //trailing: TextButton(onPressed: () {}, child: Text("Add")),
       ),
     );
   }

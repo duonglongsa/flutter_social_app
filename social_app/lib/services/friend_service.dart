@@ -31,6 +31,20 @@ Future<void> acceptFriendRequest(
   });
 }
 
+
+Future<void> sendRequestFriend(
+    String token, String userId) async {
+  var res = await http
+      .post(Uri.parse(localhost + "/v1/friends/set-request-friend/"), headers: {
+    'Context-Type': 'application/json;charSet=UTF-8',
+    'Authorization': 'Bearer $token',
+    'Accept': 'application/json',
+  }, body: {
+    'user_id': userId,
+  });
+  print(res.body);
+}
+
 Future<List<User>> getFriendList(String token) async {
   var res =
       await http.post(Uri.parse(localhost + "/v1/friends/list"), headers: {
@@ -69,8 +83,19 @@ Future<List<User>> getSearchUserList(String token, String keyword) async {
     'keyword': keyword
   });
   var responseJson = json.decode(res.body);
-  print(responseJson);
   return (responseJson["data"] as List)
       .map((p) => User.fromFriendRequestJson(p))
       .toList();
+}
+
+Future<User> getUserProfile(String token, String userId) async {
+  var res =
+      await http.get(Uri.parse(localhost + "/v1/users/show/$userId"), headers: {
+    'Context-Type': 'application/json;charSet=UTF-8',
+    'Authorization': 'Bearer $token',
+    'Accept': 'application/json',
+  });
+  var responseJson = json.decode(res.body);
+  print(res.body);
+  return User.fromPostJson(responseJson["data"]);
 }

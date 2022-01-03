@@ -31,6 +31,9 @@ class SearchFriendController extends GetxController {
     isLoading = false;
     update();
   }
-
+  
+  Future addFriend(String userId) async {
+    await sendRequestFriend(token!, userId);
+  }
   
 }
