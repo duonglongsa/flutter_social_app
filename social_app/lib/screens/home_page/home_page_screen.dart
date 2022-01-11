@@ -75,11 +75,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                createPostWidget(
-                  onCreatePost: () {
-                    Get.to(() => const CreatePostScreen());
-                  },
-                ),
+                createPostWidget(),
                 GetBuilder<HomeController>(
                     init: homeController,
                     builder: (context) {

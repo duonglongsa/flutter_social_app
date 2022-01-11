@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:social_app/models/post.dart';
 import 'package:http/http.dart' as http;
@@ -6,21 +7,20 @@ import 'package:social_app/utilities/configs.dart';
 
 //todo: chinh lai api de fetch
 
-Future<List<Post>> getPostList(String token) async {
+Future<List<Post>> getPostList(String token, String querry) async {
   var res = await http
-      .get(Uri.parse(localhost + "/v1/posts/list"), headers: {
+      .get(Uri.parse(localhost + "/v1/posts/list$querry"), headers: {
     'Context-Type': 'application/json;charSet=UTF-8',
     'Authorization': 'Bearer $token',
     'Accept': 'application/json',
   });
   var responseJson = json.decode(res.body);
-  print(responseJson["data"].toString());
+  log(responseJson["data"].toString());
   return (responseJson["data"] as List).map((p) => Post.fromJson(p)).toList();
 }
 
 Future<String> createPost(Post post, String token) async {
-  print("image:" + post.image!);
-  print("Caption:" + post.described!);
+  //log(jsonEncode(post.image.toList()));
 
   // List<int> imageBytes = File(post.image!).readAsBytesSync();
   // String base64Image = base64Encode(imageBytes);
@@ -37,12 +37,11 @@ Future<String> createPost(Post post, String token) async {
       },
       body: {
         "described": post.described,
-        "images": "",
+        "images": jsonEncode(post.image),
         "videos": "",
         "countComments": '0',
       });
-
-  return res.statusCode.toString();
+  return res.body;
 }
 
 

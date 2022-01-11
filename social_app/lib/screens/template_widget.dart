@@ -5,23 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:social_app/controllers/profile/user_profile_controller.dart';
 import 'package:social_app/models/comment_model.dart';
 import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/controllers/home/home_controller.dart';
+import 'package:social_app/screens/user_profile/user_profile_screen.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-Widget createPostWidget({
-  required VoidCallback onCreatePost,
-}) {
+import 'create_post/create_post_screen.dart';
+
+Widget createPostWidget() {
   return Card(
+    elevation: 5,
     child: Container(
       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 0.0),
       color: cointainerColor,
       child: InkWell(
-        onTap: (){onCreatePost();},
+        onTap: (){Get.to(() => const CreatePostScreen());},
         child: Column(
           children: [
             Row(
@@ -97,6 +100,7 @@ Widget post(
     required Post post,
     required Color postColor}) {
   return Card(
+    elevation: 5,
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       color: postColor,
@@ -107,61 +111,66 @@ Widget post(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      //backgroundImage: avatar,
-                      backgroundColor: Colors.greenAccent,
-                      radius: 18,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            post.postUser!.name!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                InkWell(
+                  onTap: (){
+                    Get.to(()=>UserProfileScreen(userId: post.postUser!.id!));
+                  },
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        //backgroundImage: avatar,
+                        backgroundColor: Colors.greenAccent,
+                        radius: 18,
+                      ),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              post.postUser!.name!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                timeago.format(post.timeCreated!),
-                                style: kHintTextStyle,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Icon(
-                                Icons.public,
-                                color: Colors.white70,
-                                size: 12.0,
-                              )
-                            ],
-                          ),
-                        ],
+                            Row(
+                              children: [
+                                Text(
+                                  timeago.format(post.timeCreated!),
+                                  style: kHintTextStyle,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Icon(
+                                  Icons.public,
+                                  color: Colors.white70,
+                                  size: 12.0,
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.more_horiz,
-                        color: Colors.white70,
+                      IconButton(
+                        icon: const Icon(
+                          Icons.more_horiz,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () async {
+                          String? currentUserId = await FlutterSecureStorage().read(key: 'userId');
+                          
+                          if(currentUserId == post.postUser!.id){
+                            return _showPostOption(context, post.postID!);
+                          } else {
+                            return _showOthersPostOption(context, post.postID!);
+                          }
+                          
+                        },
                       ),
-                      onPressed: () async {
-                        String? currentUserId = await FlutterSecureStorage().read(key: 'userId');
-                        
-                        if(currentUserId == post.postUser!.id){
-                          return _showPostOption(context, post.postID!);
-                        } else {
-                          return _showOthersPostOption(context, post.postID!);
-                        }
-                        
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 4.0),
                 Text(
