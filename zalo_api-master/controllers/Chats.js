@@ -82,6 +82,7 @@ chatController.send = async (req, res, next) => {
         });
     }
 }
+
 chatController.getMessages = async (req, res, next) => {
     try {
         let messages = await MessagesModel.find({
@@ -102,14 +103,36 @@ chatController.getConversationList = async (req, res,next) => {
     const userId = req.userId;
 
     try{
+        // find all chat that user take part in
         const conversation = await ChatModel.find({ 
-            member: {$in: [userId]}
-        })
+            member: userId
+        }).lean();
+
+        // lay mang cac id
+        let chatId = conversation.map(c => c._id);
+        let messageArr = [];
+        for( let id of chatId){
+            let mess = await MessagesModel.find({chat: id}).sort({"createdAt":-1}).limit(1);
+            if(mess){
+                // console.log(mess);
+                messageArr.push(mess);
+            }
+        }
+
+        // console.log(messageArr);
+
+        for(let i = 0; i < conversation.length; i++){
+            // cons
+            conversation[i].lastMess = messageArr[i][0];
+            console.log('alo ',conversation[i].lastMess);
+        }
+
 
         //conversation se la 1 mang cac cuoc hoi thoai,
         res.status(200).json({
             message: "fetching use conversation",
-            data: conversation
+            data: conversation,
+            // chatId: chatId
         })
     }catch(err){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)

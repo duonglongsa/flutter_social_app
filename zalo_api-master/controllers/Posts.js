@@ -28,8 +28,12 @@ postsController.create = async (req, res, next) => {
                 image = image.slice(1);
                 image = image.slice(0,-1);
                 if (uploadFile.matchesFileBase64(image) !== false) {
+                    console.log('anh la match file base 64');
+
                     const imageResult = uploadFile.uploadFile(image);
                     if (imageResult !== false) {
+                        console.log('anh upload');
+
                         let imageDocument = new DocumentModel({
                             fileName: imageResult.fileName,
                             fileSize: imageResult.fileSize,
