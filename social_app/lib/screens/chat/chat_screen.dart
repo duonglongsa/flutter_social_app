@@ -1,20 +1,15 @@
-
-import 'dart:async';
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:social_app/models/message_model.dart';
 import 'package:social_app/controllers/chat/chat_controller.dart';
-import 'package:social_app/services/chat_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
-import 'chat_message.dart';
 import 'options_screen.dart';
 
-
-
 class ChatScreen extends StatefulWidget {
+  final String roomId;
+  final String roomName;
+
+  const ChatScreen({Key? key, required this.roomId, required this.roomName}) : super(key: key);
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -25,7 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    print("init");
+    chatController.roomId = widget.roomId;
     chatController.onInit();
   }
 
@@ -36,11 +31,11 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-
             IconButton(
                 onPressed: () async {
                   chatController.onInit();
-                }, icon: Icon(Icons.arrow_back_ios)),
+                },
+                icon: const Icon(Icons.arrow_back_ios)),
             InkWell(
               child: const CircleAvatar(
                   backgroundImage: AssetImage("lib/assets/avatar.jpg")),
@@ -49,14 +44,8 @@ class _ChatScreenState extends State<ChatScreen> {
             const SizedBox(
               width: 10,
             ),
-            Column(
-              children: [
-                Text("Girl", style: TextStyle(fontSize: 25)),
-                Text("Active 3m ago", style: TextStyle(fontSize: 12)),
-              ],
-            ),
-          ],
-        
+            Text(widget.roomName, style: const TextStyle(fontSize: 25)),
+         ],
         ),
         backgroundColor: cointainerColor,
         elevation: 5,
@@ -67,7 +56,6 @@ class _ChatScreenState extends State<ChatScreen> {
             bottom: Radius.circular(10),
           ),
         ),
-
       ),
       body: Column(
         children: [
@@ -126,7 +114,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                 border: InputBorder.none),
                           ),
                         ),
-                        
                       ],
                     ),
                   )),
@@ -183,16 +170,16 @@ class Message extends StatelessWidget {
                   color: Colors.black.withOpacity(0.5),
                   spreadRadius: 0,
                   blurRadius: 4,
-                  offset: const Offset(2, 8), // changes position of shadow
+                  offset: const Offset(0, 2), // changes position of shadow
                 ),
               ],
             ),
             child: Container(
               child: Text(
                 chatMessage.content!,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
-              constraints: BoxConstraints(maxWidth: 200),
+              constraints: const BoxConstraints(maxWidth: 200),
             ))
       ],
     );

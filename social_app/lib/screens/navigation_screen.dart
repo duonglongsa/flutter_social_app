@@ -5,7 +5,7 @@ import 'package:social_app/screens/home_page/home_page_screen.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 import 'chat/options_screen.dart';
-import 'overview_chat/overview_chat.dart';
+import 'chat/room_chat.dart';
 
 class NavScreen extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     HomePageScreen(),
     FriendScreen(),
-    OptionsScreen(),
+    ContactsScreen(),
     Scaffold(),
   ];
   final List<IconData> _icons = const [

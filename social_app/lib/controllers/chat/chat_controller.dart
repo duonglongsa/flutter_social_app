@@ -9,6 +9,7 @@ class ChatController extends GetxController {
 
   final  storage = const FlutterSecureStorage();
   String ?userId, token;
+  String? roomId;
 
   // final messageList = <MessageModel>[].obs;
   // List<MessageModel> get messages => messageList.value;
@@ -21,7 +22,7 @@ class ChatController extends GetxController {
     super.onInit();
     userId = await storage.read(key: "userId");
     token = await storage.read(key: "token");
-    messageList = await ChatService.getMessageList(token!, userId!, "61af287171f599769ca378fc");
+    messageList = await ChatService.getMessageList(token!, userId!, roomId!);
     update();
   }
 

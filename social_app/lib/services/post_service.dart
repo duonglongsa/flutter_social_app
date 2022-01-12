@@ -16,7 +16,6 @@ class PostService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    log(responseJson["data"].toString());
     return (responseJson["data"] as List).map((p) => Post.fromJson(p)).toList();
   }
 
