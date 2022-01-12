@@ -140,7 +140,7 @@ class _PostScreenState extends State<PostScreen> {
                 IconButton(
                   color: Colors.black54,
                   onPressed: () async {
-                    await createComment(
+                    await CommentService.createComment(
                       widget.post.postID!,
                       CommentModel(postController.commentController.text, ""),
                       postController.token!,

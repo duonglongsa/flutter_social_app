@@ -241,7 +241,7 @@ Widget post(
                         child: InkWell(
                           onTap: () async {
                             String? token = await FlutterSecureStorage().read(key: 'token');
-                            likePost(post.postID!, token!);
+                            PostService.likePost(post.postID!, token!);
                           },
                           child: Container(
                             padding:
@@ -503,7 +503,7 @@ void _showRepostForm(BuildContext context, String postId){
                       onPressed: () async {
                         String? token = await FlutterSecureStorage().read(key: 'token');
                         print(token);
-                        reportPost(
+                        PostService.reportPost(
                           postId,
                           subjectTextController.text,
                           detailsTextController.text, 
@@ -574,7 +574,7 @@ void _selectedDeletePost(String postId) async {
   print(postId);
   String? token = await const FlutterSecureStorage().read(key: 'token');
 
-  await deletePost(postId, token!);
+  await PostService.deletePost(postId, token!);
 
   final homeController = Get.find<HomeController>();
   print("before" + homeController.postList!.length.toString());

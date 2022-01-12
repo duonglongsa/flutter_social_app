@@ -26,14 +26,14 @@ class SearchFriendController extends GetxController {
   Future getSearchList(String val) async {
     isLoading = true;
     update();
-    searchFriendList = await getSearchFriendList(token!, val);
-    searchUserList = await getSearchUserList(token!, val);
+    searchFriendList = await FriendService.getSearchFriendList(token!, val);
+    searchUserList = await FriendService.getSearchUserList(token!, val);
     isLoading = false;
     update();
   }
   
   Future addFriend(String userId) async {
-    await sendRequestFriend(token!, userId);
+    await FriendService.sendRequestFriend(token!, userId);
   }
   
 }

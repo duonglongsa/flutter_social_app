@@ -22,12 +22,12 @@ class UserProfleController extends GetxController {
 
   
   void getProfileUser(String profileId) async {
-    user = await getUserProfile(token!, profileId);
+    user = await FriendService.getUserProfile(token!, profileId);
     update();
   }
 
   void getProfilePost(String profileId) async {
-    postList = await getPostList(token!, "?userId=$profileId");
+    postList = await PostService.getPostList(token!, "?userId=$profileId");
     update();
   }
 

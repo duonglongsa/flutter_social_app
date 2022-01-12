@@ -27,17 +27,17 @@ class FriendController extends GetxController {
   }
 
   Future getFList() async {
-    friendList = await getFriendList(token!);
+    friendList = await FriendService.getFriendList(token!);
     update();
   }
 
   Future getRequestList() async {
-    requestFriendList = await getRequestFriendList(token!);
+    requestFriendList = await FriendService.getRequestFriendList(token!);
     update();
   }
 
   Future acceptFriend(String userId, bool isAccept) async {
-    await acceptFriendRequest(token!, userId, isAccept);
+    await FriendService.acceptFriendRequest(token!, userId, isAccept);
     await getRequestList();
     update();
   }
