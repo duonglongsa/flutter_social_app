@@ -28,7 +28,7 @@ const auth = async (req, res, next) => {
 
     req.userId = userId;
     next();
-  } catch (err) {
+  } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
   }
 };
