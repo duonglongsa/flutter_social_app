@@ -305,6 +305,7 @@ usersController.setBlock = async (req, res, next) => {
             blocked = user.blocked_inbox
         }
     
+        //type = 0: block, 1 unblock
         if(type) {
      
             if(blocked.indexOf(targetId) === -1) {

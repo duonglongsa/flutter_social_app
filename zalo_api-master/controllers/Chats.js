@@ -133,9 +133,11 @@ chatController.deleteMessage = (req, res, next) => {
 	const messId = req.params.id;
 	// console.log("message deleted: ", messId);
 
-	MessagesModel.findByIdAndDelete(messId)
+	MessagesModel.findById(messId)
 		.then((message) => {
 			console.log("tin nhan muon xoa: ", message);
+			message.content='Tin nhan da bi thu hoi'
+			message.save();
 			res.status(200).json({ message: "Message deleted" });
 		})
 		.catch((err) => {
