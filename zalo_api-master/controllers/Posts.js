@@ -253,6 +253,11 @@ postsController.list = async (req, res, next) => {
             });
         } else {
             // get list friend of 1 user
+            const user = await UserModel.findById(userId);
+            const blockList = user.blocked_diary ? user.blocked_diary : [];
+            console.log('blockList', blockList);
+
+
             let friends = await FriendModel.find({
                 status: "1",
             }).or([
@@ -264,12 +269,18 @@ postsController.list = async (req, res, next) => {
                 }
             ])
             let listIdFriends = [];
-            console.log(friends)
+            // console.log(friends)
             for (let i = 0; i < friends.length; i++) {
                 if (friends[i].sender.toString() === userId.toString()) {
-                    listIdFriends.push(friends[i].receiver);
+                    if(!blockList.includes(friends[i].receiver)){
+                        listIdFriends.push(friends[i].receiver);
+
+                    }
                 } else {
-                    listIdFriends.push(friends[i].sender);
+                    if(!blockList.includes(friends[i].sender)){
+                        listIdFriends.push(friends[i].sender);
+
+                    }
                 }
             }
             listIdFriends.push(userId);
