@@ -12,12 +12,15 @@ import 'package:social_app/models/user.dart';
 import 'package:social_app/controllers/home/home_controller.dart';
 import 'package:social_app/screens/user_profile/user_profile_screen.dart';
 import 'package:social_app/services/post_service.dart';
+import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'create_post/create_post_screen.dart';
 
-Widget createPostWidget() {
+Widget createPostWidget({
+  required String userAvatar
+}){
   return Card(
     elevation: 5,
     child: Container(
@@ -28,12 +31,13 @@ Widget createPostWidget() {
         child: Column(
           children: [
             Row(
-              children: const [
+              children: [
                 CircleAvatar(
+                  backgroundImage: NetworkImage('$networkFile$userAvatar'),
                   backgroundColor: Colors.blueAccent,
                 ),
-                SizedBox(width: 8.0),
-                Expanded(
+                const SizedBox(width: 8.0),
+                const Expanded(
                   child: TextField(
                     enabled: false,
                     keyboardType: TextInputType.multiline,
@@ -117,8 +121,8 @@ Widget post(
                   },
                   child: Row(
                     children: [
-                      const CircleAvatar(
-                        //backgroundImage: avatar,
+                      CircleAvatar(
+                        backgroundImage: NetworkImage("$networkFile${post.postUser!.avatar!}"),
                         backgroundColor: Colors.greenAccent,
                         radius: 18,
                       ),
@@ -179,10 +183,9 @@ Widget post(
                     color: Colors.white,
                   ),
                 ),
-                Padding(
+                if(post.image != null && post.image!.isNotEmpty) Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Image.network(
-                      "https://memehay.com/meme/20210924/troll-mu-cup-trong-long-nguoi-ham-mo-la-chiec-cup-quy-gia-nhat.jpg"),
+                  child: Image.network("$networkFile${post.image![0].fileName}"),
                 ),
                 const SizedBox(
                   height: 5,

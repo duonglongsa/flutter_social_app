@@ -99,6 +99,6 @@ class FriendService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    return User.fromPostJson(responseJson["data"]);
+    return User.fromProfileJson(responseJson["data"]);
   }
 }

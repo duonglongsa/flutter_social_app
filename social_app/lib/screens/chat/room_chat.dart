@@ -107,8 +107,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: roomChatController.roomChatList!.length,
                       itemBuilder: (context, index) => roomChat(
-                        room: roomChatController.roomChatList![index]
-                      ),
+                          room: roomChatController.roomChatList![index]),
                     );
                   } else {
                     return Container();
@@ -119,9 +118,45 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   Widget roomChat({required RoomModel room}) {
-    return InkWell(
-      onTap: (){
-        Get.to(() => ChatScreen(roomId: room.roomId!, roomName: room.memberName[0],));
+    late double _tapPoistionX, _tapPositionY;
+
+    _onTapDown(TapDownDetails details) {
+      _tapPoistionX = details.globalPosition.dx;
+      _tapPositionY = details.globalPosition.dy;
+      // or user the local position method to get the offset
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ChatScreen(
+              roomId: room.roomId!,
+              roomName: room.memberName[0],
+            ));
+      },
+      onTapDown: (TapDownDetails details) => _onTapDown(details),
+      onLongPress: () {
+        showMenu(
+          items: <PopupMenuEntry>[
+            PopupMenuItem(
+              onTap: () async {
+                roomChatController.deleteRoomChat(room.roomId!);
+              },
+              height: 20,
+              value: 0,
+              child: const SizedBox(
+                height: 20,
+                child: Text(
+                  "Delete",
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            )
+          ],
+          context: context,
+          position: RelativeRect.fromLTRB(_tapPoistionX, _tapPositionY, 0, 0),
+        );
       },
       child: ListTile(
           leading: const CircleAvatar(

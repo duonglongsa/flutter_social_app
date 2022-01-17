@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:social_app/models/image.dart';
 import 'package:social_app/models/user.dart';
 
 class Post {
@@ -7,7 +8,7 @@ class Post {
   String? userId;
   DateTime? timeCreated;
 
-  List<String>? image;
+  List<ImageModel>? image;
   String? video;
 
   List<dynamic>? likedUserId;
@@ -31,7 +32,7 @@ class Post {
         postUser = User.fromPostJson(json["author"]),
         countLikes = (json["like"] as List).length,
         likedUserId = json["like"],
-        isLike = json["isLike"];  
-        //image = json["images"] as List<String>;
+        isLike = json["isLike"],
+        image = (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList();
 
 }

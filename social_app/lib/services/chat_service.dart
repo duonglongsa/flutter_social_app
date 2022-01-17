@@ -5,6 +5,7 @@ import 'package:social_app/models/message_model.dart';
 import 'package:social_app/models/room_model.dart';
 import 'package:social_app/services/friend_service.dart';
 import 'package:social_app/utilities/configs.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 //todo: chinh lai api de fetch
 
@@ -18,7 +19,6 @@ class ChatService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    print(responseJson["data"].toString());
     return (responseJson["data"] as List).map((p) {
       MessageModel messageModel = MessageModel.fromJson(p);
       messageModel.isSender = (messageModel.sender!.id == userId);
@@ -55,7 +55,6 @@ class ChatService {
     });
 
     var responseJson = json.decode(res.body);
-    print(responseJson["message"]);
     List<RoomModel> roomList = (responseJson["data"] as List)
         .map((p) => RoomModel.fromJson(p))
         .toList();
@@ -69,5 +68,44 @@ class ChatService {
     }
 
     return roomList;
+  }
+
+  static Future<void> deleteMessage(String token, String messageId) async {
+    var res = await http.delete(
+      Uri.parse(localhost + "/v1/chats/deleteMessage/$messageId"),
+      headers: {
+        'Context-Type': 'application/json;charSet=UTF-8',
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    print(res.statusCode);
+  }
+
+  static Future<void> deleteChatRoom(String token, String roomId) async {
+    var res = await http.delete(
+      Uri.parse(localhost + "/v1/chats/deleteConversation/$roomId"),
+      headers: {
+        'Context-Type': 'application/json;charSet=UTF-8',
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+    print(res.statusCode);
+  }
+
+  static Socket getChatSocket() {
+    print("socket");
+    Socket socket;
+    socket = io("http://192.168.1.3:8000");
+
+    // Handle socket events
+    socket.on('connect', (_) => print('connect: ${socket.id}'));
+    socket.on('chatmessage', (_) => print("send a message"));
+    socket.on('disconnect', (_) => print('disconnect'));
+    socket.on("message", (data) => print("send $data"));
+    socket.connect();
+    socket.onConnectError((data) => print("error $data"));
+    return socket;
   }
 }

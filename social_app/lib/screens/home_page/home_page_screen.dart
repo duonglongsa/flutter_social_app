@@ -66,42 +66,45 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ],
         ), //resizeToAvoidBottomInset: false,
-        body: RefreshIndicator(
-          onRefresh: () => homeController.getList(),
-          backgroundColor: backGroundColor,
-          child: SingleChildScrollView(
-            //controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                createPostWidget(),
-                GetBuilder<HomeController>(
-                    init: homeController,
-                    builder: (context) {
-                      if (homeController.postList == null) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else {
-                        return ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: homeController.postList!.length,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () => Get.to(() => PostScreen(
-                                    post: homeController.postList![index],
-                                  )),
-                              child: post(
-                                postColor: cointainerColor,
-                                context: context,
-                                post: homeController.postList![index],
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    }),
-              ],
+        body: Center(
+          child: RefreshIndicator(
+            onRefresh: () => homeController.getList(),
+            backgroundColor: backGroundColor,
+            child: SingleChildScrollView(
+              //controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: GetBuilder<HomeController>(
+                  init: homeController,
+                  builder: (_) {
+                    if (homeController.postList == null &&
+                        homeController.currentUser == null) {
+                      return const CircularProgressIndicator();
+                    } else {
+                      return Column(
+                        children: [
+                          createPostWidget(
+                              userAvatar: homeController.currentUser!.avatar!),
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: homeController.postList!.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () => Get.to(() => PostScreen(
+                                      post: homeController.postList![index],
+                                    )),
+                                child: post(
+                                  postColor: cointainerColor,
+                                  context: context,
+                                  post: homeController.postList![index],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                  }),
             ),
           ),
         ),

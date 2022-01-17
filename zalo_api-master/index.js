@@ -52,9 +52,16 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
     socket.on('chatmessage', msg => {
+        // msg.chatId
+        // msg.content
+        // msg.userid
+
+        console.log('mess: ', msg);
+
         // const message = new MessageModel({ msg });
-        message.save().then(() => {
-            io.emit('message', msg)
-        })
+        // message.save().then(() => {
+        //     io.emit('message', msg)
+            
+        // })
     })
 });

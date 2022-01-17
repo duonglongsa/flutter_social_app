@@ -21,5 +21,8 @@ class RoomChatController extends GetxController {
     update();
   }
 
+  void deleteRoomChat(String roomId) async {
+    await ChatService.deleteChatRoom(token!, roomId);
+  }
   
 }

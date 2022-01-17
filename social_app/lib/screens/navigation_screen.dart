@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:social_app/screens/chat/chat_screen.dart';
 import 'package:social_app/screens/friends/friends_screen.dart';
 import 'package:social_app/screens/home_page/home_page_screen.dart';
+import 'package:social_app/screens/setting/setting_screen.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 import 'chat/options_screen.dart';
@@ -17,7 +18,7 @@ class _NavScreenState extends State<NavScreen> {
     HomePageScreen(),
     FriendScreen(),
     ContactsScreen(),
-    Scaffold(),
+    SettingScreen(),
   ];
   final List<IconData> _icons = const [
     Icons.home,

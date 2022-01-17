@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:social_app/models/image.dart';
 import 'package:social_app/models/post.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
@@ -24,11 +25,11 @@ class CreatePostController extends GetxController {
   }
 
   void addPost() async {
-    List<String> base64Image = [];
+    List<ImageModel> base64Image = [];
     for (File file in imagePath) {
       List<int> bytes = await file.readAsBytes();
       String img64 = base64Encode(bytes);
-      base64Image.add("data:image/jpeg;base64," + img64);
+      base64Image.add(ImageModel("data:image/jpeg;base64," + img64));
     }
     var res = await PostService.createPost(
         Post(userId, describedController.text, base64Image, videoPath), token!);
