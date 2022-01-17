@@ -51,10 +51,40 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-    socket.on('chatmessage', msg => {
-        const message = new MessageModel({ msg });
-        message.save().then(() => {
-            io.emit('message', msg)
-        })
-    })
+    // socket.on('chatmessage', msg => {
+    //     const message = new MessageModel({ msg });
+    //     message.save().then(() => {
+    //         io.emit('message', msg)
+    //     })
+    // })
+    // socket.on('chatmessage', async (msg) => {
+    //     // console.log(msg.token)
+    //     // if (msg.token && msg.receiverId) {
+    //         try {
+    //             // decoded = jwt.verify(msg.token, process.env.JWT_SECRET);
+    //             // msg.senderId = decoded.id;
+    //             // delete msg.token;
+    //             // msg.time = new Date();
+    //             data = await chatController.saveMessage(msg);
+    //             if (data !== null) {
+    //                 msg.chatId = data.chatId;
+    //                 msg._id = data.msgId;
+    //                 //mh can xem
+
+    //                 if (socketIds[msg.senderId]) {
+    //                     for (let i = 0; i < socketIds[msg.senderId].length; i++) {
+    //                         io.to(socketIds[msg.senderId][i]).emit('message', msg);
+    //                     }
+    //                 }
+    //                 if (socketIds[msg.receiverId]) {
+    //                     for (let i = 0; i < socketIds[msg.receiverId].length; i++) {
+    //                         io.to(socketIds[msg.receiverId][i]).emit('message', msg);
+    //                     }
+    //                 }
+    //             }
+    //         } catch (e) {
+    //             console.log(e);
+    //         }
+    //     // }
+    // })
 });
