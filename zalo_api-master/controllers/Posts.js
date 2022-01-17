@@ -207,6 +207,7 @@ postsController.show = async (req, res, next) => {
             return res.status(httpStatus.NOT_FOUND).json({message: "Can not find post"});
         }
         post.isLike = post.like.includes(req.userId);
+        console.log('post: ' + post);
         return res.status(httpStatus.OK).json({
             data: post,
         });

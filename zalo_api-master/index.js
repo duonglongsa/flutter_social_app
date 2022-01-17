@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
     socket.on('chatmessage', msg => {
-        // const message = new MessageModel({ msg });
+        const message = new MessageModel({ msg });
         message.save().then(() => {
             io.emit('message', msg)
         })
