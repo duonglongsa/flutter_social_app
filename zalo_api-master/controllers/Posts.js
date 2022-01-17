@@ -20,13 +20,11 @@ postsController.create = async (req, res, next) => {
         } = req.body;
         let images = req.body.images;
         let dataImages = [];
-        images = images.slice(1);
-        images = images.slice(0,-1);
-        images = images.split('","');
+        
         if (Array.isArray(images)) {
+            console.log('anh la mang')
             for (let image of images) {
-                image = image.slice(1);
-                image = image.slice(0,-1);
+               
                 if (uploadFile.matchesFileBase64(image) !== false) {
                     console.log('anh la match file base 64');
 
@@ -207,7 +205,7 @@ postsController.show = async (req, res, next) => {
             return res.status(httpStatus.NOT_FOUND).json({message: "Can not find post"});
         }
         post.isLike = post.like.includes(req.userId);
-        console.log('post: ' + post);
+        // console.log('post: ' + post);
         return res.status(httpStatus.OK).json({
             data: post,
         });
