@@ -22,8 +22,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     chatController.roomId = widget.roomId;
-    chatController.onInit();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         builder: (context) {
                           if (chatController.messageList != null) {
                             return ListView.builder(
+                              //reverse: true,
                               itemCount: chatController.messageList!.length,
                               itemBuilder: (context, index) => message(
                                 chatMessage: chatController.messageList![index],

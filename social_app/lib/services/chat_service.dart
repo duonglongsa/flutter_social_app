@@ -1,11 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:social_app/models/message_model.dart';
 import 'package:social_app/models/room_model.dart';
 import 'package:social_app/services/friend_service.dart';
 import 'package:social_app/utilities/configs.dart';
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 
 //todo: chinh lai api de fetch
 
@@ -94,18 +96,16 @@ class ChatService {
     print(res.statusCode);
   }
 
-  static Socket getChatSocket() {
-    print("socket");
-    Socket socket;
-    socket = io("http://192.168.1.3:8000");
+  static IO.Socket getChatSocket() {
+    IO.Socket socket = IO.io('http://192.168.1.3:4000', <String, dynamic> {
+      "transports":["websocket"],
+    });
+    socket.connect();
+    socket.onConnect((_) {
+      print('connect');
+    });
 
-    // Handle socket events
-    socket.on('connect', (_) => print('connect: ${socket.id}'));
-    socket.on('chatmessage', (_) => print("send a message"));
-    socket.on('disconnect', (_) => print('disconnect'));
-    socket.on("message", (data) => print("send $data"));
-    //socket.connect();
-    socket.onConnectError((data) => print("error $data"));
+    print(socket.connected);
     return socket;
   }
 }

@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import 'package:social_app/models/message_model.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/services/chat_service.dart';
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatController extends GetxController {
 
   final  storage = const FlutterSecureStorage();
   String ?userId, token;
   String? roomId;
-  Socket? socket;
+  IO.Socket? socket;
 
   // final messageList = <MessageModel>[].obs;
   // List<MessageModel> get messages => messageList.value;
@@ -25,7 +25,7 @@ class ChatController extends GetxController {
     userId = await storage.read(key: "userId");
     token = await storage.read(key: "token");
     messageList = await ChatService.getMessageList(token!, userId!, roomId!);
-    //socket = ChatService.getChatSocket();
+    socket = ChatService.getChatSocket();
     update();
   }
 
@@ -40,13 +40,7 @@ class ChatController extends GetxController {
     messageTextConntroller.clear();
     await ChatService.sendMessage(token!, message);
     messageList = await ChatService.getMessageList(token!, userId!, roomId!);
-    // socket!.emit('chatmessage', {
-    //   "chatId": message.roomId,
-    //   "receivedId": message.receiver!.id,
-    //   "member": "",
-    //   "type": "PRIVATE_CHAT",
-    //   "content": message.content
-    // });
+    socket!.emit('chatmessage', message.content);
     update();
   }
 

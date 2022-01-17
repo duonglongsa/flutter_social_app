@@ -25,7 +25,7 @@ class MessageModel {
       : content = json["content"],
         roomId = json["chat"],
         timeCreated = DateTime.parse(json["createdAt"]),
-        sender = User.fromPostJson(json["user"]),
+        sender = User.fromCommentJson(json["user"]),
         timeUpdated = DateTime.parse(json["updatedAt"]),
         messageId = json["_id"];
 }

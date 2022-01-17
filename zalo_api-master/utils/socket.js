@@ -68,5 +68,5 @@ io.on('connection', function(socket){
     })
 });
 
-const PORT = 16000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = 4000;
+server.listen(PORT, "0.0.0.0", () => console.log(`Chat Server running on port ${PORT}`));
