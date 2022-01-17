@@ -20,11 +20,16 @@ postsController.create = async (req, res, next) => {
         } = req.body;
         let images = req.body.images;
         let dataImages = [];
-        
+        images = images.slice(1);
+        images = images.slice(0,-1);
+        console.log("images ", images);
+        images = images.toString().split('","');
         if (Array.isArray(images)) {
             console.log('anh la mang')
             for (let image of images) {
-               
+                image = image.slice(1);
+                image = image.slice(0,-1);
+                // console.log("image ", image);
                 if (uploadFile.matchesFileBase64(image) !== false) {
                     console.log('anh la match file base 64');
 

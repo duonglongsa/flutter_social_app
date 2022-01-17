@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/Users");
+const FriendModel = require("../models/Friends")
 const DocumentModel = require("../models/Documents");
 const httpStatus = require("../utils/httpStatus");
 const bcrypt = require("bcrypt");
@@ -252,6 +253,8 @@ usersController.changePassword = async (req, res, next) => {
 }
 usersController.show = async (req, res, next) => {
     try {
+        // type = 0, 1 = friends, 2 = strangers
+        let type = 0;
         let userId = null;
         if (req.params.id) {
             userId = req.params.id;
@@ -264,8 +267,29 @@ usersController.show = async (req, res, next) => {
             return res.status(httpStatus.NOT_FOUND).json({message: "Can not find user"});
         }
 
+        let requested = await FriendModel.find({sender: req.userId, status: "1" }).distinct('receiver').lean();
+        let accepted = await FriendModel.find({receiver: req.userId, status: "1" }).distinct('sender').lean();
+        let requestedList = requested.map(f => f.toString());
+        let acceptedList = accepted.map(f => f.toString());
+
+        // console.log("requested ", requested );
+        // console.log("accepted :", accepted );
+        // console.log('userid: ', user._id);
+        // console.log('accepted[0]: ', accepted[2].toString() == user._id.toString());
+
+        // console.log(accepted.indexOf(user._id));
+        if(user._id.toString() == req.userId){
+            type = 0;
+        } else if( acceptedList.includes(user._id.toString()) || requestedList.includes(user._id.toString())){
+            type = 1;
+        } else{
+            type = 2;
+        }
+
+
         return res.status(httpStatus.OK).json({
-            data: user
+            data: user,
+            type
         });
     } catch (error) {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
