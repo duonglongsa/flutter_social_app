@@ -6,7 +6,16 @@ const mainRouter = require("./routes/index");
 const {PORT} = require("./constants/constants");
 const {MONGO_URI} = require("./constants/constants");
 const bodyParser = require('body-parser');
-const io = require('socket.io')(3000)
+const http = require('http');
+
+const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require("./utils/usersGroupRealtime");
+
+const app2 = express();
+const chatServer = http.createServer(app2);
+const { Server } = require("socket.io");
+const io = new Server(chatServer);
+
+// const io = require('socket.io')(3000)
 // const MessageModel = require("../models/Messages");
 
 // connect to mongodb
@@ -41,16 +50,16 @@ app.listen(PORT, () => {
     console.log("server start - " + PORT);
 })
 
-// Socket.io chat realtime
-io.on('connection', (socket) => {
-    MessageModel.find().then(result => {
-        socket.emit('output-messages', result)
-    })
-    console.log('a user connected');
-    socket.emit('message', 'Hello world');
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
+// // Socket.io chat realtime
+// io.on('connection', (socket) => {
+//     MessageModel.find().then(result => {
+//         socket.emit('output-messages', result)
+//     })
+//     console.log('a user connected');
+//     socket.emit('message', 'Hello world');
+//     socket.on('disconnect', () => {
+//         console.log('user disconnected');
+//     });
     // socket.on('chatmessage', msg => {
     //     const message = new MessageModel({ msg });
     //     message.save().then(() => {
@@ -87,4 +96,65 @@ io.on('connection', (socket) => {
     //         }
     //     // }
     // })
+// });
+
+
+// format message
+const moment = require('moment');
+const botName = 'Nhom12';
+
+function formatMessage(username, text) {
+  return {
+    username,
+    text,
+    time: moment().format('h:mm a')
+  };
+}
+
+// open socket 
+io.on('connection', function(socket){
+    socket.on("joinRoom", ({username, room}) => {   
+        const user = userJoin(socket.id, username, room);
+        socket.join(user.room);
+
+        socket.emit('message', formatMessage(botName, 'Welcome!'));
+        socket.broadcast
+        .to(user.room)
+        .emit(
+            'message',
+            formatMessage(botName, `${user.username} has joined the chat`)
+        )
+
+        // Send users and room info
+        io.to(user.room).emit('roomUsers', {
+            room: user.room,
+            users: getRoomUsers(user.room)
+        });
+    })
+
+    socket.on('chatMessage', msg => {
+        const user = getCurrentUser(socket.id);
+        io.to(user.room).emit('message', formatMessage(user.username, msg));
+    })
+
+    socket.on('disconnect', () => {
+        const user = userLeave(socket.id);
+
+        if(user){
+            io.to(user.room).emit(
+                'message',
+                formatMessage(botName, `${user.username} has left the chat`)
+            );
+
+             // Send users and room info
+            io.to(user.room).emit('roomUsers', {
+                room: user.room,
+                users: getRoomUsers(user.room)
+            });
+        }
+    })
 });
+
+chatServer.listen(3500, () => {
+    console.log("server chat start - " + 3500);
+})

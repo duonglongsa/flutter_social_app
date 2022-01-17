@@ -26,7 +26,7 @@ function formatMessage(username, text) {
 
 // open socket 
 io.on('connection', function(socket){
-    socket.on("joinRoom", ({username, room}) => {
+    socket.on("joinRoom", ({username, room}) => {   
         const user = userJoin(socket.id, username, room);
         socket.join(user.room);
 
@@ -68,5 +68,5 @@ io.on('connection', function(socket){
     })
 });
 
-const PORT = 16000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = 4000;
+server.listen(PORT,"0.0.0.0" ,() => console.log(`Server running on port ${PORT}`));
