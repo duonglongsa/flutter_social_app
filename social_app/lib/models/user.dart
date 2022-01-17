@@ -51,16 +51,16 @@ class User {
       birthDay = DateTime.parse(json['birthday']);
     }
     if (json.containsKey('description')) {
-      birthDay = DateTime.parse(json['description']);
+      description = json['description'];
     }
     if (json.containsKey('address')) {
-      birthDay = DateTime.parse(json['address']);
+      address = json['address'];
     }
     if (json.containsKey('city')) {
-      birthDay = DateTime.parse(json['city']);
+      city = json['city'];
     }
     if (json.containsKey('country')) {
-      birthDay = DateTime.parse(json['country']);
+      country = json['country'];
     }
   }
 

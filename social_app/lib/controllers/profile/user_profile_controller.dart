@@ -28,6 +28,7 @@ class UserProfleController extends GetxController {
 
   void getProfilePost(String profileId) async {
     postList = await PostService.getPostList(token!, "?userId=$profileId");
+    postList = postList.reversed.toList();
     update();
   }
 

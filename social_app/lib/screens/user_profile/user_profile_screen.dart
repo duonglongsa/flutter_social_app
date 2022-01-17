@@ -28,6 +28,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Future initController() async {
     await userProfileController.getUserInfo();
     userProfileController.getProfileUser(widget.userId);
+    userProfileController.getProfilePost(widget.userId);
   }
 
   @override
@@ -48,11 +49,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Container(
-                              child: FittedBox(
-                                  fit: BoxFit.fill,
-                                  child: Image.network(
-                                      "$networkFile${userProfileController.user!.coverImage}"))),
+                          FittedBox(
+                              fit: BoxFit.fill,
+                              child: Image.network(
+                                  "$networkFile${userProfileController.user!.coverImage!.fileName}")),
                           const SizedBox(
                             height: 60,
                           )
@@ -62,25 +62,104 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Align(
                         alignment: Alignment.bottomCenter,
                         child: CircleAvatar(
-                          radius: 80,
-                          backgroundColor: backGroundColor,
+                          radius: 65,
+                          backgroundColor: Colors.white,
                           child: CircleAvatar(
-                            radius: 75,
+                            radius: 60,
                             backgroundImage: NetworkImage(
-                                "$networkFile${userProfileController.user!.avatar}"),
+                                "$networkFile${userProfileController.user!.avatar!.fileName}"),
                           ),
                         ),
                       ))
                     ]),
-                    const SizedBox(
-                      width: 450,
-                      height: 20,
-                    ),
                     Text(userProfileController.user!.name!,
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white)),
                     const SizedBox(height: 20, width: 0),
-                    createPostWidget(userAvatar: userProfileController.user!.avatar!.fileName!),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Expanded(
+                            child: TextButton.icon(
+                              onPressed: () {},
+                              label: const Text(
+                                'Message',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              icon: const Icon(Icons.message, color: Colors.white),
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.blue[700])),
+                            ),
+                          ),
+                          const SizedBox(width: 10,),
+                          TextButton.icon(
+                            onPressed: () {},
+                            label: const Text(
+                              'Unfriend',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            icon: const Icon(Icons.person_off, color: Colors.white,),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red[700])),
+                          ),
+                          const SizedBox(width: 10,),
+                          TextButton.icon(
+                            onPressed: () {},
+                            label: const Text(
+                              'Block',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            icon: const Icon(Icons.block, color: Colors.white,),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red[700])),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Expanded(
+                            child: TextButton.icon(
+                              onPressed: () {},
+                              label: const Text(
+                                'Send friend request',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              icon: const Icon(Icons.person_add_alt, color: Colors.white,),
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.blue[700])),
+                            ),
+                          ),
+                          const SizedBox(width: 10,),
+                         
+                          TextButton.icon(
+                            onPressed: () {},
+                            label: const Text(
+                              'Block',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            icon: const Icon(Icons.block, color: Colors.white,),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red[700])),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 20, width: 0),
+                    createPostWidget(
+                        userAvatar:
+                            userProfileController.user!.avatar!.fileName!),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

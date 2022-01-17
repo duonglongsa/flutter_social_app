@@ -12,4 +12,11 @@ class ImageModel{
     id = json['_id'],
     fileName = json['fileName'];
 
+  Map<String, dynamic> toJson() => 
+  {
+    'type': 'other',
+    '_id': id,
+    'fileName': fileName,
+  };
+
 }

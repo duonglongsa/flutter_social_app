@@ -163,7 +163,7 @@ Widget post(
                           color: Colors.white70,
                         ),
                         onPressed: () async {
-                          String? currentUserId = await FlutterSecureStorage().read(key: 'userId');
+                          String? currentUserId = await const FlutterSecureStorage().read(key: 'userId');
                           
                           if(currentUserId == post.postUser!.id){
                             return _showPostOption(context, post.postID!);
@@ -194,7 +194,7 @@ Widget post(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.blue,
                         shape: BoxShape.circle,
                       ),
@@ -243,7 +243,7 @@ Widget post(
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () async {
-                            String? token = await FlutterSecureStorage().read(key: 'token');
+                            String? token = await const FlutterSecureStorage().read(key: 'token');
                             PostService.likePost(post.postID!, token!);
                           },
                           child: Container(
@@ -272,7 +272,7 @@ Widget post(
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          child: Container(
+                          child: SizedBox(
                             height: 25.0,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

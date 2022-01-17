@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/utilities/configs.dart';
 
@@ -30,7 +31,7 @@ class AuthService {
     return res;
   }
 
-  static Future<http.Response> editProFile(String token, String user) async {
+  static Future<http.Response> editProFile(String token, User user) async {
     var res = await http.post(Uri.parse(localhost + "/v1/users/edit"),
         headers: <String, String>{
           'Context-Type': 'application/json;charSet=UTF-8',
@@ -38,8 +39,17 @@ class AuthService {
           'Accept': 'application/json',
         },
         body: {
-         
+          "username": user.name,
+          "gender": user.gender,
+          "birthday": DateFormat("yyyy-MM-ddTHH:mm:ss").format(user.birthDay!),
+          "description": user.description,
+          "address": user.address,
+          "city": user.city,
+          "country": user.country,
+          //"avatar": user.avatar!.toJson(),
+          //"cover_image": user.coverImage!.toJson(),
         });
+    print(res.body);
     return res;
   }
 }

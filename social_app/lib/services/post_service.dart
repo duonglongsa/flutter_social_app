@@ -27,7 +27,6 @@ class PostService {
     // print(base64Image);
 
     // List<String> images = [base64Image];
-    log(jsonEncode(post.image!.map((e) => e.fileName).toList()));
     var res = await http.post(
         Uri.parse(localhost + "/v1/posts/create?userId=" + post.userId!),
         headers: {

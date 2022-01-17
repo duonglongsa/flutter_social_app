@@ -6,8 +6,8 @@ const DocumentModel = require("../models/Documents");
 var url = require('url');
 const httpStatus = require("../utils/httpStatus");
 const bcrypt = require("bcrypt");
-const {JWT_SECRET} = require("../constants/constants");
-const {ROLE_CUSTOMER} = require("../constants/constants");
+const { JWT_SECRET } = require("../constants/constants");
+const { ROLE_CUSTOMER } = require("../constants/constants");
 const uploadFile = require('../functions/uploadFile');
 
 const postsController = {};
@@ -15,16 +15,22 @@ postsController.create = async (req, res, next) => {
     let userId = req.userId;
     try {
         const {
-            described,            
+            described,
             videos,
         } = req.body;
         let images = req.body.images;
         let dataImages = [];
         
+        // images = Array.from(images);
+        // console.log(typeof images);
+        images = images.slice(1);
+        images = images.slice(0, -1);
+        images = images.split('","');
         if (Array.isArray(images)) {
             console.log('anh la mang')
             for (let image of images) {
-               
+                image = image.slice(1);
+                image = image.slice(0,-1);
                 if (uploadFile.matchesFileBase64(image) !== false) {
                     console.log('anh la match file base 64');
 
@@ -99,10 +105,10 @@ postsController.edit = async (req, res, next) => {
         let postId = req.params.id;
         let postFind = await PostModel.findById(postId);
         if (postFind == null) {
-            return res.status(httpStatus.NOT_FOUND).json({message: "Can not find post"});
+            return res.status(httpStatus.NOT_FOUND).json({ message: "Can not find post" });
         }
         if (postFind.author.toString() !== userId) {
-            return res.status(httpStatus.FORBIDDEN).json({message: "Can not edit this post"});
+            return res.status(httpStatus.FORBIDDEN).json({ message: "Can not edit this post" });
         }
 
         const {
@@ -202,7 +208,7 @@ postsController.show = async (req, res, next) => {
             },
         });
         if (post == null) {
-            return res.status(httpStatus.NOT_FOUND).json({message: "Can not find post"});
+            return res.status(httpStatus.NOT_FOUND).json({ message: "Can not find post" });
         }
         post.isLike = post.like.includes(req.userId);
         // console.log('post: ' + post);
@@ -210,20 +216,20 @@ postsController.show = async (req, res, next) => {
             data: post,
         });
     } catch (error) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
 }
 postsController.delete = async (req, res, next) => {
     try {
         let post = await PostModel.findByIdAndDelete(req.params.id);
         if (post == null) {
-            return res.status(httpStatus.NOT_FOUND).json({message: "Can not find post"});
+            return res.status(httpStatus.NOT_FOUND).json({ message: "Can not find post" });
         }
         return res.status(httpStatus.OK).json({
             message: 'Delete post done',
         });
     } catch (error) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
 }
 
@@ -283,7 +289,7 @@ postsController.list = async (req, res, next) => {
             });
         }
         let postWithIsLike = [];
-        for (let i = 0; i < posts.length; i ++) {
+        for (let i = 0; i < posts.length; i++) {
             let postItem = posts[i];
             postItem.isLike = postItem.like.includes(req.userId);
             postWithIsLike.push(postItem);
@@ -292,7 +298,7 @@ postsController.list = async (req, res, next) => {
             data: postWithIsLike
         });
     } catch (error) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
 }
 
