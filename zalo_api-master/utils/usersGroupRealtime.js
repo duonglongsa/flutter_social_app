@@ -1,9 +1,9 @@
 const users = [];
 
 // Join user to chat
-function userJoin(id, username, room) {
-  const user = { id, username, room };
-
+function userJoin(id ,user_id, username, room) {
+  const user = { id ,user_id, username, room };
+  console.log('user: ', user);
   users.push(user);
 
   return user;
@@ -11,7 +11,9 @@ function userJoin(id, username, room) {
 
 // Get current user
 function getCurrentUser(id) {
-  return users.find(user => user.id === id);
+  let myUser = users.find(user => user.id === id);
+  console.log('sao v: ',myUser);
+  return myUser;
 }
 
 // User leaves chat
