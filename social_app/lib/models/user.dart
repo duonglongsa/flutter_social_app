@@ -34,8 +34,8 @@ class User {
   User.fromPostJson(Map<String, dynamic> json)
       : name = json['username'],
         phoneNumber = json['phonenumber'],
-        id = json['_id'];
-        //avatar = ImageModel.fileName(json['avatar']['fileName']);
+        id = json['_id'],
+        avatar = ImageModel.fileName(json['avatar']['fileName']);
         //avatar = json['avatar']['fileName'],
         //coverImage = json['cover_image']['fileName'];
   User.fromCommentJson(Map<String, dynamic> json)

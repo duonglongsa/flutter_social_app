@@ -25,7 +25,7 @@ class ChatController extends GetxController {
     userId = await storage.read(key: "userId");
     token = await storage.read(key: "token");
     messageList = await ChatService.getMessageList(token!, userId!, roomId!);
-    socket = ChatService.getChatSocket();
+    //socket = ChatService.getChatSocket();
     update();
   }
 
@@ -40,13 +40,13 @@ class ChatController extends GetxController {
     messageTextConntroller.clear();
     await ChatService.sendMessage(token!, message);
     messageList = await ChatService.getMessageList(token!, userId!, roomId!);
-    socket!.emit('chatmessage', {
-      "chatId": message.roomId,
-      "receivedId": message.receiver!.id,
-      "member": "",
-      "type": "PRIVATE_CHAT",
-      "content": message.content
-    });
+    // socket!.emit('chatmessage', {
+    //   "chatId": message.roomId,
+    //   "receivedId": message.receiver!.id,
+    //   "member": "",
+    //   "type": "PRIVATE_CHAT",
+    //   "content": message.content
+    // });
     update();
   }
 

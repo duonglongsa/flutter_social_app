@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/controllers/home/home_controller.dart';
 import 'package:social_app/screens/user_profile/user_profile_screen.dart';
+import 'package:social_app/services/friend_service.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
@@ -18,16 +20,16 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'create_post/create_post_screen.dart';
 
-Widget createPostWidget({
-  required String userAvatar
-}){
+Widget createPostWidget({required String userAvatar}) {
   return Card(
     elevation: 5,
     child: Container(
       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 0.0),
       color: cointainerColor,
       child: InkWell(
-        onTap: (){Get.to(() => const CreatePostScreen());},
+        onTap: () {
+          Get.to(() => const CreatePostScreen());
+        },
         child: Column(
           children: [
             Row(
@@ -116,14 +118,15 @@ Widget post(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 InkWell(
-                  onTap: (){
-                    Get.to(()=>UserProfileScreen(userId: post.postUser!.id!));
+                  onTap: () {
+                    Get.to(() => UserProfileScreen(userId: post.postUser!.id!));
                   },
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: NetworkImage("$networkFile${post.postUser!.avatar!.fileName}"),
-                        backgroundColor: Colors.greenAccent,
+                        backgroundImage: NetworkImage(
+                            "$networkFile${post.postUser!.avatar!.fileName}"),
+                        backgroundColor: Colors.grey,
                         radius: 18,
                       ),
                       const SizedBox(width: 8.0),
@@ -163,14 +166,15 @@ Widget post(
                           color: Colors.white70,
                         ),
                         onPressed: () async {
-                          String? currentUserId = await const FlutterSecureStorage().read(key: 'userId');
-                          
-                          if(currentUserId == post.postUser!.id){
+                          String? currentUserId =
+                              await const FlutterSecureStorage()
+                                  .read(key: 'userId');
+
+                          if (currentUserId == post.postUser!.id) {
                             return _showPostOption(context, post.postID!);
                           } else {
                             return _showOthersPostOption(context, post.postID!);
                           }
-                          
                         },
                       ),
                     ],
@@ -183,44 +187,62 @@ Widget post(
                     color: Colors.white,
                   ),
                 ),
-                if(post.image != null && post.image!.isNotEmpty) Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Image.network("$networkFile${post.image![0].fileName}"),
-                ),
+                if (post.image != null && post.image!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child:
+                        Image.network("$networkFile${post.image![0].fileName}"),
+                  ),
                 const SizedBox(
                   height: 5,
                 ),
-                Row(
-                  children: [
-                    if(post.countLikes! > 0) Container(
-                      padding: const EdgeInsets.all(4.0),
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.thumb_up,
-                        size: 10.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 4.0),
-                    Expanded(
-                      child: Text(
-                        post.countLikes! > 0 ? '${post.countLikes} Likes':'',
-                        style: TextStyle(
-                          color: Colors.grey[600],
+                InkWell(
+                  onTap: () async {
+                    String? token =
+                        await const FlutterSecureStorage().read(key: "token");
+                    List<User> likedUsers = [];
+                    for (String userId in post.likedUserId!) {
+                      likedUsers
+                          .add(await FriendService.getUserInfo(token!, userId));
+                    }
+                    _showLikeList(context, likedUsers);
+                  },
+                  child: Row(
+                    children: [
+                      if (post.countLikes! > 0)
+                        Container(
+                          padding: const EdgeInsets.all(4.0),
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.thumb_up,
+                            size: 10.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      const SizedBox(width: 4.0),
+                      Expanded(
+                        child: Text(
+                          post.countLikes! > 0
+                              ? '${post.countLikes} Likes'
+                              : '',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ),
-                    ),
-                    if(post.countComments! > 0)Text(
-                      '${post.countComments} Comments',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(width: 8.0),
-                  ],
+                      if (post.countComments! > 0)
+                        Text(
+                          '${post.countComments} Comments',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      const SizedBox(width: 8.0),
+                    ],
+                  ),
                 ),
                 const Divider(
                   height: 10.0,
@@ -237,9 +259,12 @@ Widget post(
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () async {
-                            String? token = await const FlutterSecureStorage().read(key: 'token');
+                            String? token = await const FlutterSecureStorage()
+                                .read(key: 'token');
                             PostService.likePost(post.postID!, token!);
                             post.isLike = true;
+                            post.countLikes = post.countLikes! + 1;
+                            (context as Element).markNeedsBuild();
                           },
                           child: Container(
                             padding:
@@ -250,12 +275,17 @@ Widget post(
                               children: [
                                 Icon(
                                   Icons.thumb_up_alt_outlined,
-                                  color: post.isLike ? Colors.blue:Colors.white70,
+                                  color: post.isLike
+                                      ? Colors.blue
+                                      : Colors.white70,
                                 ),
                                 const SizedBox(width: 4.0),
                                 Text(
                                   'Like',
-                                  style: TextStyle(color: post.isLike ? Colors.blue:Colors.white70),
+                                  style: TextStyle(
+                                      color: post.isLike
+                                          ? Colors.blue
+                                          : Colors.white70),
                                 ),
                               ],
                             ),
@@ -279,32 +309,6 @@ Widget post(
                                 SizedBox(width: 4.0),
                                 Text(
                                   'Comment',
-                                  style: TextStyle(color: Colors.white70),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            height: 25.0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.share,
-                                  color: Colors.white70,
-                                ),
-                                SizedBox(width: 4.0),
-                                Text(
-                                  'Share',
                                   style: TextStyle(color: Colors.white70),
                                 ),
                               ],
@@ -407,7 +411,7 @@ Widget commentWidget({
       ],
     );
 
-void _showOthersPostOption(BuildContext context, String postId){
+void _showOthersPostOption(BuildContext context, String postId) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -438,8 +442,7 @@ void _showOthersPostOption(BuildContext context, String postId){
   );
 }
 
-
-void _showLikeList(BuildContext context, Post post){
+void _showLikeList(BuildContext context, List<User> likedUsers) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -451,7 +454,37 @@ void _showLikeList(BuildContext context, Post post){
         children: [
           Column(
             children: [
-              
+              const Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Users liked this post:', style: kLabelStyle, ),
+              ),
+              ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: likedUsers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(children: [
+                        CircleAvatar(
+                          radius: 15,
+                          backgroundImage: NetworkImage(
+                              '$networkFile${likedUsers[index].avatar!.fileName}'),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          likedUsers[index].name!,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ]),
+                    );
+                  }),
+              const SizedBox(
+                height: 50,
+              )
             ],
           ),
         ],
@@ -460,7 +493,7 @@ void _showLikeList(BuildContext context, Post post){
   );
 }
 
-void _showRepostForm(BuildContext context, String postId){
+void _showRepostForm(BuildContext context, String postId) {
   TextEditingController subjectTextController = TextEditingController();
   TextEditingController detailsTextController = TextEditingController();
 
@@ -483,20 +516,18 @@ void _showRepostForm(BuildContext context, String postId){
                   leading: const Text(
                     "Subject",
                     style: TextStyle(color: Colors.white),
-
                   ),
                   title: TextFormField(
                     controller: subjectTextController,
                     style: const TextStyle(
                       color: Colors.white,
-                    ),                   
+                    ),
                   ),
                 ),
                 ListTile(
                   leading: const Text(
                     "Details",
                     style: TextStyle(color: Colors.white),
-
                   ),
                   title: TextFormField(
                     controller: detailsTextController,
@@ -509,9 +540,9 @@ void _showRepostForm(BuildContext context, String postId){
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [                    
+                  children: [
                     TextButton(
-                      onPressed: (){}, 
+                      onPressed: () {},
                       child: const Text(
                         "Cancel",
                         style: TextStyle(
@@ -521,12 +552,13 @@ void _showRepostForm(BuildContext context, String postId){
                     ),
                     TextButton(
                       onPressed: () async {
-                        String? token = await FlutterSecureStorage().read(key: 'token');
+                        String? token =
+                            await FlutterSecureStorage().read(key: 'token');
                         print(token);
                         PostService.reportPost(
                           postId,
                           subjectTextController.text,
-                          detailsTextController.text, 
+                          detailsTextController.text,
                           token!,
                         );
                       },
