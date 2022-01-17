@@ -18,6 +18,7 @@ class User {
   String? city;
   String? country;
 
+  int? type;
   DateTime? timeRequested;
 
   User(this.name, this.phoneNumber, this.password);
@@ -33,11 +34,18 @@ class User {
   User.fromPostJson(Map<String, dynamic> json)
       : name = json['username'],
         phoneNumber = json['phonenumber'],
-        id = json['_id'],
-        avatar = ImageModel.fileName(json['avatar']['fileName']);
+        id = json['_id'];
+        //avatar = ImageModel.fileName(json['avatar']['fileName']);
         //avatar = json['avatar']['fileName'],
         //coverImage = json['cover_image']['fileName'];
-  
+  User.fromCommentJson(Map<String, dynamic> json)
+      : name = json['username'],
+        phoneNumber = json['phonenumber'],
+        id = json['_id'];
+        //avatar = ImageModel.fileName(json['avatar']['fileName']);
+        //avatar = json['avatar']['fileName'],
+        //coverImage = json['cover_image']['fileName'];
+
   User.fromInfoJson(Map<String, dynamic> json)
       : gender = json['gender'],
         blockedInbox = List.castFrom(json['blocked_inbox']),

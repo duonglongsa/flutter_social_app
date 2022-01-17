@@ -18,7 +18,7 @@ class CommentModel {
       : content = json["content"],
         timeCreated = DateTime.parse(json["createdAt"]),
         timeUpdated = DateTime.parse(json["updatedAt"]),
-        user = User.fromPostJson(json["user"]),
+        user = User.fromCommentJson(json["user"]),
         postId = json["post"],
         commentAnsweredId = json["commentAnswered"]??"";
 }

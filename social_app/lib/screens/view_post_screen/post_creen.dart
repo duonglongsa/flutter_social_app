@@ -29,7 +29,7 @@ class _PostScreenState extends State<PostScreen> {
   Future initController() async {
     postController.postId = widget.post.postID!;
     await postController.getUserInfo();
-    await postController.getList();
+    await postController.getCommentList();
   }
 
   @override
@@ -60,51 +60,54 @@ class _PostScreenState extends State<PostScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(bottom: 40),
-          child: Container(
-            color: backGroundColor,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  post(
-                    postColor: backGroundColor,
-                    context: context,
-                    post: widget.post,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GetBuilder<PostController>(
-                        init: postController,
-                        builder: (context) {
-                          if (postController.commentList == null) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else {
-                            return ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: postController.commentList!.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: commentWidget(
-                                    context: context,
-                                    user: postController
-                                        .commentList![index].user!,
-                                    comment: postController.commentList![index],
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                        }),
-                  ),
-                ],
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 40),
+            child: Container(
+              height: double.infinity,
+              color: backGroundColor,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    post(
+                      postColor: backGroundColor,
+                      context: context,
+                      post: widget.post,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GetBuilder<PostController>(
+                          init: postController,
+                          builder: (context) {
+                            if (postController.commentList == null) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else {
+                              return ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: postController.commentList!.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: commentWidget(
+                                      context: context,
+                                      user: postController
+                                          .commentList![index].user!,
+                                      comment: postController.commentList![index],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          }),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -140,14 +143,15 @@ class _PostScreenState extends State<PostScreen> {
                 IconButton(
                   color: Colors.black54,
                   onPressed: () async {
+                    FocusScope.of(context).unfocus();
                     await CommentService.createComment(
                       widget.post.postID!,
                       CommentModel(postController.commentController.text, ""),
                       postController.token!,
                     );
-                    postController.getList();
                     postController.commentController.text = "";
-                    FocusScope.of(context).unfocus();
+                    postController.getCommentList();
+                    widget.post.countComments = widget.post.countComments!+ 1;
                   },
                   icon: const Icon(
                     Icons.send,

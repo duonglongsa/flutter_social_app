@@ -22,11 +22,10 @@ class PostController extends GetxController {
     token = await storage.read(key: 'token');
   }
 
-  Future<List<CommentModel>> getList() async {
+  Future<List<CommentModel>> getCommentList() async {
     commentList = await CommentService.getCommentList(postId!, token!);
     commentList = commentList!.reversed.toList();   //newest post first
     update();
-    print("update");
     return commentList!;
   }
 

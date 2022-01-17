@@ -76,90 +76,117 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white)),
                     const SizedBox(height: 20, width: 0),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: TextButton.icon(
+                    if (userProfileController.user!.type! == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  userProfileController.blockUser();
+                                },
+                                label: const Text(
+                                  'Message',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                icon: const Icon(Icons.message,
+                                    color: Colors.white),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.blue[700])),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            TextButton.icon(
                               onPressed: () {},
                               label: const Text(
-                                'Message',
+                                'Unfriend',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              icon: const Icon(Icons.message, color: Colors.white),
+                              icon: const Icon(
+                                Icons.person_off,
+                                color: Colors.white,
+                              ),
                               style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.blue[700])),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.red[700])),
                             ),
-                          ),
-                          const SizedBox(width: 10,),
-                          TextButton.icon(
-                            onPressed: () {},
-                            label: const Text(
-                              'Unfriend',
-                              style: TextStyle(color: Colors.white),
+                            const SizedBox(
+                              width: 10,
                             ),
-                            icon: const Icon(Icons.person_off, color: Colors.white,),
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.red[700])),
-                          ),
-                          const SizedBox(width: 10,),
-                          TextButton.icon(
-                            onPressed: () {},
-                            label: const Text(
-                              'Block',
-                              style: TextStyle(color: Colors.white),
+                            TextButton.icon(
+                              onPressed: () {
+                                userProfileController.blockUser();
+                              },
+                              label: const Text(
+                                'Block',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              icon: const Icon(
+                                Icons.block,
+                                color: Colors.white,
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.red[700])),
                             ),
-                            icon: const Icon(Icons.block, color: Colors.white,),
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.red[700])),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: TextButton.icon(
+                    if (userProfileController.user!.type! == 2)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  userProfileController.blockUser();
+                                },
+                                label: const Text(
+                                  'Send friend request',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                icon: const Icon(
+                                  Icons.person_add_alt,
+                                  color: Colors.white,
+                                ),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.blue[700])),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            TextButton.icon(
                               onPressed: () {},
                               label: const Text(
-                                'Send friend request',
+                                'Block',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              icon: const Icon(Icons.person_add_alt, color: Colors.white,),
+                              icon: const Icon(
+                                Icons.block,
+                                color: Colors.white,
+                              ),
                               style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.blue[700])),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.red[700])),
                             ),
-                          ),
-                          const SizedBox(width: 10,),
-                         
-                          TextButton.icon(
-                            onPressed: () {},
-                            label: const Text(
-                              'Block',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            icon: const Icon(Icons.block, color: Colors.white,),
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.red[700])),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    
+                    if (userProfileController.user!.type! == 0) Row(),
                     const SizedBox(height: 20, width: 0),
-                    createPostWidget(
-                        userAvatar:
-                            userProfileController.user!.avatar!.fileName!),
+                    if (userProfileController.user!.type! == 0)
+                      createPostWidget(
+                          userAvatar:
+                              userProfileController.user!.avatar!.fileName!),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

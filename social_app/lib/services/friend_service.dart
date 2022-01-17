@@ -92,8 +92,22 @@ class FriendService {
         .toList();
   }
 
+  static Future<void> blockUser(String token, String blockId) async {
+    var res =
+        await http.post(Uri.parse(localhost + "/v1/users/set-block-diary"), headers: {
+      'Context-Type': 'application/json;charSet=UTF-8',
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    }, body: {
+      'user_id': blockId,
+      'type': '0'
+    });
+    log(res.body);
+  }
+
+
   static Future<User> getUserInfo(String token, String userId) async {
-    log("abc");
+    User user;
     var res = await http
         .get(Uri.parse(localhost + "/v1/users/show/$userId"), headers: {
       'Context-Type': 'application/json;charSet=UTF-8',
@@ -102,7 +116,9 @@ class FriendService {
     });
     var responseJson = json.decode(res.body);
     log(responseJson.toString());
-    return User.fromInfoJson(responseJson["data"]);
+    user = User.fromInfoJson(responseJson["data"]);
+    user.type = responseJson["type"];
+    return user;
   }
   
 }

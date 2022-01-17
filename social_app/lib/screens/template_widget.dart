@@ -192,7 +192,7 @@ Widget post(
                 ),
                 Row(
                   children: [
-                    Container(
+                    if(post.countLikes! > 0) Container(
                       padding: const EdgeInsets.all(4.0),
                       decoration: const BoxDecoration(
                         color: Colors.blue,
@@ -207,25 +207,19 @@ Widget post(
                     const SizedBox(width: 4.0),
                     Expanded(
                       child: Text(
-                        '${post.countLikes} Likes',
+                        post.countLikes! > 0 ? '${post.countLikes} Likes':'',
                         style: TextStyle(
                           color: Colors.grey[600],
                         ),
                       ),
                     ),
-                    Text(
+                    if(post.countComments! > 0)Text(
                       '${post.countComments} Comments',
                       style: TextStyle(
                         color: Colors.grey[600],
                       ),
                     ),
                     const SizedBox(width: 8.0),
-                    Text(
-                      'Shares',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                      ),
-                    )
                   ],
                 ),
                 const Divider(
@@ -245,6 +239,7 @@ Widget post(
                           onTap: () async {
                             String? token = await const FlutterSecureStorage().read(key: 'token');
                             PostService.likePost(post.postID!, token!);
+                            post.isLike = true;
                           },
                           child: Container(
                             padding:
@@ -258,9 +253,9 @@ Widget post(
                                   color: post.isLike ? Colors.blue:Colors.white70,
                                 ),
                                 const SizedBox(width: 4.0),
-                                const Text(
+                                Text(
                                   'Like',
-                                  style: TextStyle(color: Colors.white70),
+                                  style: TextStyle(color: post.isLike ? Colors.blue:Colors.white70),
                                 ),
                               ],
                             ),
@@ -339,10 +334,10 @@ Widget commentWidget({
     Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 18,
           backgroundColor: Colors.grey,
-          //backgroundImage: NetworkImage(rootComment.avatarUrl),
+          backgroundImage: NetworkImage("$networkFile${user.avatar!.fileName}"),
         ),
         const SizedBox(
           width: 10,
@@ -435,6 +430,28 @@ void _showOthersPostOption(BuildContext context, String postId){
                 ),
                 onTap: () => _showRepostForm(context, postId),
               ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+void _showLikeList(BuildContext context, Post post){
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    backgroundColor: backGroundColor,
+    builder: (BuildContext context) {
+      return Wrap(
+        children: [
+          Column(
+            children: [
+              
             ],
           ),
         ],

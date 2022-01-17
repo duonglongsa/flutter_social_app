@@ -6,6 +6,7 @@ import 'package:social_app/models/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:social_app/services/friend_service.dart';
 import 'package:social_app/utilities/configs.dart';
 
 class CommentService {
@@ -23,9 +24,13 @@ class CommentService {
 
     var responseJson = json.decode(res.body);
     print(responseJson["data"].toString());
-    return (responseJson["data"] as List)
+    List<CommentModel> commentList = (responseJson["data"] as List)
         .map((p) => CommentModel.fromJson(p))
         .toList();
+    for(CommentModel comment in commentList){
+      comment.user = await FriendService.getUserInfo(token, comment.user!.id!);
+    }
+    return commentList;
   }
 
   static Future<String> createComment(

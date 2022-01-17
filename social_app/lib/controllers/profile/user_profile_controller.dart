@@ -32,4 +32,9 @@ class UserProfleController extends GetxController {
     update();
   }
 
+  void blockUser() async {
+    await FriendService.blockUser(token!, user!.id!);
+    update();
+  }
+
 }
