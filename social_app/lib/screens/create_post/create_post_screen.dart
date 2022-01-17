@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social_app/controllers/post/create_post_controller.dart';
 import 'package:social_app/utilities/style_constants.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({Key? key}) : super(key: key);
@@ -76,15 +78,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     GetBuilder(
                       init: createPostController,
                       builder: (_) => createPostController.imagePath != []
-                          ? ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: createPostController.imagePath.length,
-                              itemBuilder: (context, index) {
-                                return Image.file(
-                                    createPostController.imagePath[index]);
-                              },
-                            )
+                          // ? ListView.builder(
+                          //     physics: const NeverScrollableScrollPhysics(),
+                          //     shrinkWrap: true,
+                          //     itemCount: createPostController.imagePath.length,
+                          //     itemBuilder: (context, index) {
+                          //       decodeImageFromList(createPostController.imagePath[index].readAsBytesSync())
+                          //       .then((value) => print("${value.height} ${value.as}"));
+                          //       //print(cr);
+                          //       Image image = Image.file(
+                          //           createPostController.imagePath[index],);
+                          //       return image;
+                          //     },
+                          //   )
+                          ? ImageGridView(
+                              listImagePath: createPostController.imagePath)
                           : Container(
                               color: backGroundColor,
                             ),
@@ -102,7 +110,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FlatButton.icon(
-                onPressed: () => createPostController.pickImage(),
+                onPressed: () => createPostController.pickImage(context),
                 icon: const Icon(
                   Icons.photo_library,
                   color: Colors.green,
@@ -135,6 +143,233 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ImageGridView extends StatelessWidget {
+  final List<File> listImagePath;
+  List<double>? aspectRaito;
+  int numberOfVerticalImage = 0;
+
+  ImageGridView({required this.listImagePath}) {
+    aspectRaito = List<double>.filled(listImagePath.length, 0);
+  }
+
+  Future calculateAspectRaito() async {
+    for (int i = 0; i < listImagePath.length; i++) {
+      final decodeImage =
+          await decodeImageFromList(listImagePath[i].readAsBytesSync());
+      aspectRaito![i] = decodeImage.width / decodeImage.height;
+
+      if (aspectRaito![i] < 4/3) {
+        numberOfVerticalImage++;
+        print(numberOfVerticalImage);
+      }
+    }
+    listImagePath.sort((a, b){
+      return aspectRaito![listImagePath.indexOf(a)] > aspectRaito![listImagePath.indexOf(b)] ? 1:0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: calculateAspectRaito(),
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        switch (listImagePath.length) {
+          case 1:
+            return Image.file(
+              listImagePath[0],
+            );
+          case 2:
+            if (numberOfVerticalImage > 0) {
+              print("vertical");
+              return StaggeredGrid.count(
+                  crossAxisCount: 6,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![0] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[0],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![1] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[1],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]);
+            } else {
+              print("hozirontal");
+              return StaggeredGrid.count(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 4,
+                      mainAxisCellCount: 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[0],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 4,
+                      mainAxisCellCount: 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[1],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]);
+            }
+          case 3:
+            if(numberOfVerticalImage == 3){
+              return StaggeredGrid.count(
+                  crossAxisCount: 9,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![0] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[0],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![1] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[1],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![1] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[2],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]);
+            } else {
+              return StaggeredGrid.count(
+                  crossAxisCount: 6,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![0] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[0],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 3,
+                      mainAxisCellCount: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![1] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[1],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    StaggeredGridTile.count(
+                      crossAxisCellCount: 6,
+                      mainAxisCellCount: 4.5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: aspectRaito![2] < 4/3 ? BoxFit.fitWidth : BoxFit.fitHeight,
+                            alignment: FractionalOffset.center,
+                            image: FileImage(
+                              listImagePath[2],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]);
+            }
+          default:
+            return Container();
+        }
+      },
     );
   }
 }

@@ -13,6 +13,13 @@ class MessageModel {
 
   MessageModel(this.receiver, this.roomId, this.content);
 
+  MessageModel.fromChatRoom(Map<String, dynamic> json):
+    sender = User.id(json["user"]),
+    content = json["content"],
+    timeUpdated = DateTime.parse(json["updatedAt"]),
+    timeCreated = DateTime.parse(json["createdAt"]);
+  
+
   //[data]
   MessageModel.fromJson(Map<String, dynamic> json)
       : content = json["content"],

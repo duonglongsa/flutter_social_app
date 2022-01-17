@@ -5,6 +5,7 @@ import 'package:social_app/controllers/profile/user_profile_controller.dart';
 import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/screens/template_widget.dart';
+import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -24,11 +25,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     initController();
   }
 
-  
   Future initController() async {
     await userProfileController.getUserInfo();
     userProfileController.getProfileUser(widget.userId);
-    userProfileController.getProfilePost(widget.userId);
   }
 
   @override
@@ -53,7 +52,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               child: FittedBox(
                                   fit: BoxFit.fill,
                                   child: Image.network(
-                                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEDTZ1LJSMVWVqW5yiGusDNMMdTI7B4lvQjw&usqp=CAU"))),
+                                      "$networkFile${userProfileController.user!.coverImage}"))),
                           const SizedBox(
                             height: 60,
                           )
@@ -67,8 +66,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           backgroundColor: backGroundColor,
                           child: CircleAvatar(
                             radius: 75,
-                            backgroundImage:
-                                AssetImage("lib/assets/avatar.jpg"),
+                            backgroundImage: NetworkImage(
+                                "$networkFile${userProfileController.user!.avatar}"),
                           ),
                         ),
                       ))
@@ -81,7 +80,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white)),
                     const SizedBox(height: 20, width: 0),
-                    createPostWidget(),
+                    createPostWidget(userAvatar: userProfileController.user!.avatar!),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
