@@ -19,7 +19,7 @@ class HomeController extends GetxController {
   Future getUserInfo() async {
     userId = await storage.read(key: 'userId');
     token = await storage.read(key: 'token');
-    currentUser = await FriendService.getUserProfile(token!, userId!);
+    currentUser = await FriendService.getUserInfo(token!, userId!);
   }
 
   Future<List<Post>> getList() async {

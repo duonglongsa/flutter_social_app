@@ -63,7 +63,7 @@ class ChatService {
       room.memberId.remove(userId);
       for (String userId in room.memberId) {
         room.memberName
-            .add(((await FriendService.getUserProfile(token, userId)).name!));
+            .add(((await FriendService.getUserInfo(token, userId)).name!));
       }
     }
 
@@ -104,7 +104,7 @@ class ChatService {
     socket.on('chatmessage', (_) => print("send a message"));
     socket.on('disconnect', (_) => print('disconnect'));
     socket.on("message", (data) => print("send $data"));
-    socket.connect();
+    //socket.connect();
     socket.onConnectError((data) => print("error $data"));
     return socket;
   }

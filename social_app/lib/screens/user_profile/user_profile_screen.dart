@@ -80,7 +80,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white)),
                     const SizedBox(height: 20, width: 0),
-                    createPostWidget(userAvatar: userProfileController.user!.avatar!),
+                    createPostWidget(userAvatar: userProfileController.user!.avatar!.fileName!),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

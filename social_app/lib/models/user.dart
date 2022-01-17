@@ -1,12 +1,22 @@
 
+import 'package:social_app/models/image.dart';
+
 class User {
-  String ?avatar;
-  String ?coverImage;
+  ImageModel ?avatar;
+  ImageModel ?coverImage;
   String ?id;
   String ?name;
   String? phoneNumber;
   String ?password;
   String ?token;
+  String? gender;
+  List<String>? blockedInbox;
+  List<String>? blockedDiary;
+  DateTime? birthDay;
+  String? description;
+  String? address;
+  String? city;
+  String? country;
 
   DateTime? timeRequested;
 
@@ -24,16 +34,35 @@ class User {
       : name = json['username'],
         phoneNumber = json['phonenumber'],
         id = json['_id'],
-        avatar = json['avatar']['fileName'];
+        avatar = ImageModel.fileName(json['avatar']['fileName']);
         //avatar = json['avatar']['fileName'],
         //coverImage = json['cover_image']['fileName'];
   
-  User.fromProfileJson(Map<String, dynamic> json)
-      : name = json['username'],
-        phoneNumber = json['phonenumber'],
+  User.fromInfoJson(Map<String, dynamic> json)
+      : gender = json['gender'],
+        blockedInbox = List.castFrom(json['blocked_inbox']),
+        blockedDiary = List.castFrom(json['blocked_diary']),
         id = json['_id'],
-        coverImage = json['cover_image']['fileName'],
-        avatar = json['avatar']['fileName'];
+        phoneNumber = json['phoneNumber'],
+        name = json['username'],
+        avatar = ImageModel.fromJson(json['avatar']),
+        coverImage = ImageModel.fromJson(json['cover_image']) {
+    if (json.containsKey('birthday')) {
+      birthDay = DateTime.parse(json['birthday']);
+    }
+    if (json.containsKey('description')) {
+      birthDay = DateTime.parse(json['description']);
+    }
+    if (json.containsKey('address')) {
+      birthDay = DateTime.parse(json['address']);
+    }
+    if (json.containsKey('city')) {
+      birthDay = DateTime.parse(json['city']);
+    }
+    if (json.containsKey('country')) {
+      birthDay = DateTime.parse(json['country']);
+    }
+  }
 
 
 

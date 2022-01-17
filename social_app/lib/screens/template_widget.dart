@@ -122,7 +122,7 @@ Widget post(
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: NetworkImage("$networkFile${post.postUser!.avatar!}"),
+                        backgroundImage: NetworkImage("$networkFile${post.postUser!.avatar!.fileName}"),
                         backgroundColor: Colors.greenAccent,
                         radius: 18,
                       ),

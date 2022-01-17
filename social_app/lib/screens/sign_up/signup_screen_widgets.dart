@@ -116,7 +116,7 @@ Widget registerBtn(SignupController signupController) {
     child: RaisedButton(
       elevation: 5.0,
       onPressed: () async {
-        final res = await register(User(
+        final res = await AuthService.register(User(
             signupController.nameController.text,
             signupController.phoneController.text,
             signupController.passwordController.text));

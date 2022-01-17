@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:social_app/controllers/setting/edit_profile_controller.dart';
+import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -8,8 +11,15 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  String? _genderRadioBtnVal;
-  DateTime _birthday = DateTime(2000, 01, 25);
+  final EditProfileController editProfileController =
+      Get.put(EditProfileController());
+
+  @override
+  void initState() {
+    super.initState();
+    editProfileController.getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,173 +32,201 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           centerTitle: false,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Container(child: Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKBBd2Tr8_Q46N9Poo76Syy-JeZrXO4r1t-A&usqp=CAU"),),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage("lib/assets/avatar.jpg"),
-                      radius: 30,
-                    ),
-                  ),
-                ],
-              ),
-              _inputForm(title: "Name", initValue: "ldlong"),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Gender",
-                      style: kLabelStyle,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Row(
+        body: Center(
+          child: SingleChildScrollView(
+            child: GetBuilder(
+                init: editProfileController,
+                builder: (_) {
+                  if (editProfileController.user == null) {
+                    return const CircularProgressIndicator();
+                  }
+                  return Column(
+                    children: [
+                      Stack(children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Radio<String>(
-                              fillColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.white),
-                              value: "Male",
-                              groupValue: _genderRadioBtnVal,
-                              onChanged: (value) {
-                                _handleGenderChange(value!);
-                              },
-                            ),
-                            const Text(
-                              "Male",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            Container(
+                                child: FittedBox(
+                                    fit: BoxFit.fill,
+                                    child: Image.network(
+                                        "$networkFile${editProfileController.user!.coverImage!.fileName}"))),
+                            const SizedBox(
+                              height: 60,
+                            )
                           ],
                         ),
-                        Row(
+                        Positioned.fill(
+                            child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: CircleAvatar(
+                            radius: 65,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundImage: NetworkImage(
+                                  "$networkFile${editProfileController.user!.avatar!.fileName}"),
+                            ),
+                          ),
+                        ))
+                      ]),
+                      _inputForm(
+                          title: "Name",
+                          initValue: editProfileController.user!.name!),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Radio<String>(
-                              fillColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.white),
-                              value: "Female",
-                              groupValue: _genderRadioBtnVal,
-                              onChanged: (value) {
-                                _handleGenderChange(value!);
-                              },
-                            ),
                             const Text(
-                              "Female",
-                              style: TextStyle(color: Colors.white),
+                              "Gender",
+                              style: kLabelStyle,
                             ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Radio<String>(
-                              fillColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.white),
-                              value: "Other",
-                              groupValue: _genderRadioBtnVal,
-                              onChanged: (value) {
-                                _handleGenderChange(value!);
-                              },
-                            ),
-                            const Text(
-                              "Other",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Row(
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Date of birth",
-                      style: kLabelStyle,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          DateFormat('dd/MM/yyyy').format(_birthday),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() async {
-                              _birthday = (await showDatePicker(
-                                context: context,
-                                initialDate: _birthday,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2025),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData.dark().copyWith(
-                                      colorScheme: ColorScheme.dark(
-                                        primary: Colors.deepPurple,
-                                        onPrimary: Colors.white,
-                                        surface: cointainerColor,
-                                        onSurface: Colors.yellow,
-                                      ),
-                                      dialogBackgroundColor: backGroundColor,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Radio<String>(
+                                      fillColor: MaterialStateColor.resolveWith(
+                                          (states) => Colors.white),
+                                      value: "male",
+                                      groupValue:
+                                          editProfileController.user!.gender!,
+                                      onChanged: (value) {
+                                        _handleGenderChange(value!);
+                                      },
                                     ),
-                                    child: child!,
-                                  );
-                                },
-                              ))!;
-                            });
-                          },
-                          icon: Icon(Icons.calendar_today),
-                          color: Colors.white,
-                          iconSize: 20,
+                                    const Text(
+                                      "Male",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Radio<String>(
+                                      fillColor: MaterialStateColor.resolveWith(
+                                          (states) => Colors.white),
+                                      value: "female",
+                                      groupValue:
+                                          editProfileController.user!.gender!,
+                                      onChanged: (value) {
+                                        _handleGenderChange(value!);
+                                      },
+                                    ),
+                                    const Text(
+                                      "Female",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Radio<String>(
+                                      fillColor: MaterialStateColor.resolveWith(
+                                          (states) => Colors.white),
+                                      value: "secret",
+                                      groupValue:
+                                          editProfileController.user!.gender!,
+                                      onChanged: (value) {
+                                        _handleGenderChange(value!);
+                                      },
+                                    ),
+                                    const Text(
+                                      "Secret",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              _inputForm(
-                  title: "Descrpition",
-                  initValue:
-                      "boy co don tim girl dasdasdasdasdasdasdasdasdasdasdasdasdasdas"),
-              _inputForm(title: 'Address', initValue: 'Hai Ba Trung'),
-              _inputForm(title: 'City', initValue: 'Ha Noi'),
-              _inputForm(title: 'Country', initValue: 'Viet Nam'),
-              const SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Cancel', style: TextStyle(color: Colors.white),),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.red)),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Save', style: TextStyle(color: Colors.white),),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.blue)),
-                  )
-                ],
-              ),
-            ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Row(
+                          //crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Date of birth",
+                              style: kLabelStyle,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  editProfileController.user!.birthDay != null
+                                      ? DateFormat('dd/MM/yyyy').format(
+                                          editProfileController.user!.birthDay!)
+                                      : '',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                IconButton(
+                                  onPressed: () async {
+                                    editProfileController.setBirthDay(context);
+                                  },
+                                  icon: const Icon(Icons.calendar_today),
+                                  color: Colors.white,
+                                  iconSize: 20,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      _inputForm(
+                          title: "Descrpition",
+                          initValue:
+                              editProfileController.user!.description ?? ''),
+                      _inputForm(
+                          title: 'Address',
+                          initValue: editProfileController.user!.address ?? ''),
+                      _inputForm(
+                          title: 'City',
+                          initValue: editProfileController.user!.city ?? ''),
+                      _inputForm(
+                          title: 'Country',
+                          initValue: editProfileController.user!.country ?? ''),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red)),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              'Save',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.blue)),
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                }),
           ),
         ));
   }
 
   void _handleGenderChange(String value) {
     setState(() {
-      _genderRadioBtnVal = value;
+      editProfileController.user!.gender = value;
     });
   }
 

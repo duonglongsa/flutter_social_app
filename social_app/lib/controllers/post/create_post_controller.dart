@@ -31,9 +31,8 @@ class CreatePostController extends GetxController {
       String img64 = base64Encode(bytes);
       base64Image.add(ImageModel("data:image/jpeg;base64," + img64));
     }
-    var res = await PostService.createPost(
+    await PostService.createPost(
         Post(userId, describedController.text, base64Image, videoPath), token!);
-    print(res);
   }
 
   void pickImage(BuildContext context) async {

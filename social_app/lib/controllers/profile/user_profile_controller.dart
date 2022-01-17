@@ -22,7 +22,7 @@ class UserProfleController extends GetxController {
 
   
   void getProfileUser(String profileId) async {
-    user = await FriendService.getUserProfile(token!, profileId);
+    user = await FriendService.getUserInfo(token!, profileId);
     update();
   }
 

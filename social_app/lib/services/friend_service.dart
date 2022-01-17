@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:social_app/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -91,7 +92,8 @@ class FriendService {
         .toList();
   }
 
-  static Future<User> getUserProfile(String token, String userId) async {
+  static Future<User> getUserInfo(String token, String userId) async {
+    log("abc");
     var res = await http
         .get(Uri.parse(localhost + "/v1/users/show/$userId"), headers: {
       'Context-Type': 'application/json;charSet=UTF-8',
@@ -99,6 +101,8 @@ class FriendService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    return User.fromProfileJson(responseJson["data"]);
+    log(responseJson.toString());
+    return User.fromInfoJson(responseJson["data"]);
   }
+  
 }

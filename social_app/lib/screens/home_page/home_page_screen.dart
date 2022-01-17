@@ -83,7 +83,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       return Column(
                         children: [
                           createPostWidget(
-                              userAvatar: homeController.currentUser!.avatar!),
+                              userAvatar: homeController.currentUser!.avatar!.fileName!),
                           ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,

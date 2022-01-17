@@ -23,7 +23,7 @@ class SigninController extends GetxController {
   bool isObscureText = true;
 
   void pressSignin() async {
-    var res = await login(phoneController.text, passwordController.text);
+    var res = await AuthService.login(phoneController.text, passwordController.text);
     if (res.statusCode == 200) {
       user = User.fromLoginJson(json.decode(res.body));
       print(user!.id);

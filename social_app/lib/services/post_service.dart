@@ -16,7 +16,6 @@ class PostService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    log(responseJson.toString());
     return (responseJson["data"] as List).map((p) => Post.fromJson(p)).toList();
   }
 
@@ -28,7 +27,7 @@ class PostService {
     // print(base64Image);
 
     // List<String> images = [base64Image];
-
+    log(jsonEncode(post.image!.map((e) => e.fileName).toList()));
     var res = await http.post(
         Uri.parse(localhost + "/v1/posts/create?userId=" + post.userId!),
         headers: {
@@ -39,10 +38,11 @@ class PostService {
         },
         body: {
           "described": post.described,
-          "images": jsonEncode(post.image),
+          "images": jsonEncode(post.image!.map((e) => e.base64).toList()),
           "videos": "",
           "countComments": '0',
         });
+    print(res.body);
     return res.body;
   }
 
