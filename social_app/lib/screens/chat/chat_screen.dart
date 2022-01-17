@@ -24,6 +24,12 @@ class _ChatScreenState extends State<ChatScreen> {
     chatController.roomId = widget.roomId;
   }
 
+  @override
+  void dispose(){
+    super.dispose();
+    chatController.socket!.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {

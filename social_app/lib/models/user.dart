@@ -24,6 +24,7 @@ class User {
   User(this.name, this.phoneNumber, this.password);
   
   User.id(this.id);
+  User.name(this.name);
 
   User.fromLoginJson(Map<String, dynamic> json)
       : name = json['data']['username'],

@@ -13,12 +13,11 @@ class MessageModel {
 
   MessageModel(this.receiver, this.roomId, this.content);
 
-  MessageModel.fromChatRoom(Map<String, dynamic> json):
-    sender = User.id(json["user"]),
-    content = json["content"],
-    timeUpdated = DateTime.parse(json["updatedAt"]),
-    timeCreated = DateTime.parse(json["createdAt"]);
-  
+  MessageModel.fromChatRoom(Map<String, dynamic> json)
+      : sender = User.id(json["user"]),
+        content = json["content"],
+        timeUpdated = DateTime.parse(json["updatedAt"]),
+        timeCreated = DateTime.parse(json["createdAt"]);
 
   //[data]
   MessageModel.fromJson(Map<String, dynamic> json)
@@ -28,4 +27,10 @@ class MessageModel {
         sender = User.fromCommentJson(json["user"]),
         timeUpdated = DateTime.parse(json["updatedAt"]),
         messageId = json["_id"];
+
+  MessageModel.fromSocket(Map<String, dynamic> json)
+      : sender = User.name(json["username"]),
+        content = json["text"],
+        timeUpdated = DateTime.parse(json["time"]),
+        timeCreated = DateTime.parse(json["time"]);
 }

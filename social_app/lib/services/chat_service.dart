@@ -7,7 +7,7 @@ import 'package:social_app/models/room_model.dart';
 import 'package:social_app/services/friend_service.dart';
 import 'package:social_app/utilities/configs.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
+import 'package:socket_io_client/socket_io_client.dart';
 
 //todo: chinh lai api de fetch
 
@@ -97,14 +97,16 @@ class ChatService {
   }
 
   static IO.Socket getChatSocket() {
-    IO.Socket socket = IO.io('http://192.168.1.3:4000', <String, dynamic> {
-      "transports":["websocket"],
-    });
+    IO.Socket socket = IO.io(
+        'http://192.168.1.3:3500',
+        OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
+            .setExtraHeaders({'foo': 'bar'}) // optional
+            .build());
     socket.connect();
     socket.onConnect((_) {
       print('connect');
     });
-
+    socket.onConnectError((data) => print(data));
     print(socket.connected);
     return socket;
   }

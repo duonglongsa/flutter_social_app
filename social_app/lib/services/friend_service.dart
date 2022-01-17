@@ -115,7 +115,6 @@ class FriendService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    log(responseJson.toString());
     user = User.fromInfoJson(responseJson["data"]);
     user.type = responseJson["type"];
     return user;
