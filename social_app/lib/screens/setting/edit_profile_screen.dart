@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:social_app/controllers/setting/edit_profile_controller.dart';
+import 'package:social_app/models/user.dart';
 import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  final User user;
+
+  const EditProfileScreen({Key? key, required this.user}) : super(key: key);
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
@@ -18,6 +22,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     editProfileController.getUserInfo();
+    editProfileController.user = widget.user;
   }
 
   @override
@@ -87,13 +92,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 style: kLabelStyle,
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: <Widget>[
                                   Row(
                                     children: [
                                       Radio<String>(
-                                        fillColor: MaterialStateColor.resolveWith(
-                                            (states) => Colors.white),
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => Colors.white),
                                         value: "male",
                                         groupValue:
                                             editProfileController.user!.gender!,
@@ -110,8 +117,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   Row(
                                     children: [
                                       Radio<String>(
-                                        fillColor: MaterialStateColor.resolveWith(
-                                            (states) => Colors.white),
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => Colors.white),
                                         value: "female",
                                         groupValue:
                                             editProfileController.user!.gender!,
@@ -128,8 +136,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   Row(
                                     children: [
                                       Radio<String>(
-                                        fillColor: MaterialStateColor.resolveWith(
-                                            (states) => Colors.white),
+                                        fillColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => Colors.white),
                                         value: "secret",
                                         groupValue:
                                             editProfileController.user!.gender!,
@@ -163,13 +172,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   Text(
                                     editProfileController.user!.birthDay != null
                                         ? DateFormat('dd/MM/yyyy').format(
-                                            editProfileController.user!.birthDay!)
+                                            editProfileController
+                                                .user!.birthDay!)
                                         : '',
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                   IconButton(
                                     onPressed: () async {
-                                      editProfileController.setBirthDay(context);
+                                      editProfileController
+                                          .setBirthDay(context);
                                     },
                                     icon: const Icon(Icons.calendar_today),
                                     color: Colors.white,
@@ -189,7 +200,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             }),
                         _inputForm(
                             title: 'Address',
-                            initValue: editProfileController.user!.address ?? '',
+                            initValue:
+                                editProfileController.user!.address ?? '',
                             onSaved: (value) {
                               editProfileController.user!.address = value;
                             }),
@@ -201,7 +213,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             }),
                         _inputForm(
                             title: 'Country',
-                            initValue: editProfileController.user!.country ?? '',
+                            initValue:
+                                editProfileController.user!.country ?? '',
                             onSaved: (value) {
                               editProfileController.user!.country = value;
                             }),
@@ -224,6 +237,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             TextButton(
                               onPressed: () async {
                                 await editProfileController.onSaveInfo();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("Successful change!"),
+                                ));
+                                Get.back();
                               },
                               child: const Text(
                                 'Save',

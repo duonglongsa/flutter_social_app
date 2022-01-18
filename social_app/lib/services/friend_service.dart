@@ -55,6 +55,7 @@ class FriendService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
+    print(res.body);
     return (responseJson["data"]["friends"] as List)
         .map((p) => User.fromFriendRequestJson(p))
         .toList();

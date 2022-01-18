@@ -20,8 +20,6 @@ class EditProfileController extends GetxController {
   Future getUserInfo() async {
     userId = await storage.read(key: 'userId');
     token = await storage.read(key: 'token');
-    user = await FriendService.getUserInfo(token!, '');
-    update();
   }
 
   Future onSaveInfo() async {

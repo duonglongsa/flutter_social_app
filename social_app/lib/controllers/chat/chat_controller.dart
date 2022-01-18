@@ -27,14 +27,16 @@ class ChatController extends GetxController {
     token = await storage.read(key: "token");
     messageList = await ChatService.getMessageList(token!, userId!, roomId!);
     user = await FriendService.getUserInfo(token!, userId!);
-
+    print(roomId);
     socket = ChatService.getChatSocket();
     socket!.emit('joinRoom',{
       'username': user!.name,
       'room': roomId
     });
     socket!.on('message', (data){
-      messageList!.add(MessageModel.fromSocket(data));
+      MessageModel newMessage = MessageModel.fromSocket(data);
+      newMessage.sender!.id == userId ? newMessage.isSender = true : false;
+      messageList!.add(newMessage);
     });
     update();
   }

@@ -79,7 +79,8 @@ class User {
   User.fromFriendRequestJson(Map<String, dynamic> json)
       : name = json['username'],
         timeRequested = DateTime.parse(json['createdAt']),
-        id = json['_id'];
+        id = json['_id'],
+        avatar = ImageModel.fromJson(json['avatar']);
   
 
   // Map<String, dynamic> toJson() => {

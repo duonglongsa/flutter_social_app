@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:social_app/controllers/friend/friend_screen_controller.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/screens/friends/search_friends_screen.dart';
+import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -149,7 +150,7 @@ class _FriendScreenState extends State<FriendScreen>
       color: cointainerColor,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage("lib/assets/avatar.jpg"),
+          backgroundImage: NetworkImage('$networkFile${user.avatar!.fileName}'),
         ),
         title: Text(
           user.name!,
@@ -166,7 +167,7 @@ class _FriendScreenState extends State<FriendScreen>
       color: cointainerColor,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage("lib/assets/avatar.jpg"),
+          backgroundImage: NetworkImage('$networkFile${user.avatar!.fileName}'),
         ),
         title: Text(
           user.name!,

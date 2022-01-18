@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:social_app/controllers/chat/room_chat_controller.dart';
 import 'package:social_app/models/room_model.dart';
 import 'package:social_app/screens/chat/chat_screen.dart';
+import 'package:social_app/utilities/style_constants.dart';
 
 class ContactsScreen extends StatefulWidget {
   @override
@@ -21,83 +22,26 @@ class _ContactsScreenState extends State<ContactsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: cointainerColor,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'Chats',
+          style: kPageHeadingStye,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.search,
+              size: 30.0,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: Container(
-          color: Color(0xFF202466),
+          color: backGroundColor,
           child: ListView(children: <Widget>[
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: <Widget>[
-                        Stack(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: CircleAvatar(
-                                radius: 25,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                            Positioned(
-                                right: 3,
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                            color: Colors.white, width: 1)),
-                                    child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8, right: 8),
-                                        child: Text(
-                                          "+9",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600),
-                                        ))))
-                          ],
-                        ),
-                        Text(
-                          "Chats",
-                          style: TextStyle(
-                              fontSize: 26,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ]),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 14, right: 14),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(25)),
-                width: MediaQuery.of(context).size.width - 40,
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: "Search",
-                        border: InputBorder.none,
-                        icon: Icon(Icons.search)),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 10,
-            ),
             GetBuilder<RoomChatController>(
                 init: roomChatController,
                 builder: (context) {
@@ -158,7 +102,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
           position: RelativeRect.fromLTRB(_tapPoistionX, _tapPositionY, 0, 0),
         );
       },
-      child: ListTile(
+      child: Card(
+        color: backGroundColor,
+        //elevation: 3,
+        child: ListTile(
           leading: const CircleAvatar(
             radius: 30,
             backgroundColor: Colors.white,
@@ -169,13 +116,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
           ),
           subtitle: Text(room.lastMessage.content!,
               style: const TextStyle(color: Colors.grey)),
-          trailing: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1),
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white))),
+        ),
+      ),
     );
   }
 }

@@ -29,7 +29,7 @@ class MessageModel {
         messageId = json["_id"];
 
   MessageModel.fromSocket(Map<String, dynamic> json)
-      : sender = User.name(json["username"]),
+      : sender = User.id(json["user_id"]),
         content = json["text"],
         timeUpdated = DateTime.parse(json["time"]),
         timeCreated = DateTime.parse(json["time"]);
