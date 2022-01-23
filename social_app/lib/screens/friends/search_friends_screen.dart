@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social_app/controllers/friend/search_friend_controller.dart';
 import 'package:social_app/models/user.dart';
+import 'package:social_app/screens/template_widget.dart';
+import 'package:social_app/screens/user_profile/user_profile_screen.dart';
+import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -142,22 +145,25 @@ class _SearchFriendScreenState extends State<SearchFriendScreen>
   Widget _searchCard({required User user, bool isFriend = true}) {
     return InkWell(
       onTap: () async {
-        if (!isFriend) {
-          await searchFriendController.addFriend(user.id!);
-        }
+        Get.to(()=>UserProfileScreen(userId: user.id!,));
       },
       child: Card(
         elevation: 5,
         color: cointainerColor,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundImage: AssetImage("lib/assets/avatar.jpg"),
-          ),
+              backgroundImage:
+                  NetworkImage("$networkFile${user.avatar!.fileName}")),
           title: Text(
             user.name!,
             style: kLabelStyle,
           ),
-          //trailing: TextButton(onPressed: () {}, child: Text("Add")),
+          trailing: isFriend
+              ? IconButton(onPressed: (){}, icon: const Icon(Icons.message_outlined, color: Colors.white,))
+              : TextButton(onPressed: () async {
+                await searchFriendController.addFriend(user.id!);
+                showMessage("Request sent!", context);
+              }, child: const Text("Add")),
         ),
       ),
     );

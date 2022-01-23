@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:social_app/models/message_model.dart';
@@ -8,18 +9,20 @@ import 'package:social_app/services/friend_service.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatController extends GetxController {
-
-  final  storage = const FlutterSecureStorage();
-  String ?userId, token;
+  final storage = const FlutterSecureStorage();
+  String? userId, token;
   String? roomId;
   IO.Socket? socket;
   User? user;
+  bool isTyping = false;
   // final messageList = <MessageModel>[].obs;
   // List<MessageModel> get messages => messageList.value;
-  List<MessageModel> ?messageList;
+  List<MessageModel>? messageList;
 
   TextEditingController messageTextConntroller = TextEditingController();
- 
+
+  ScrollController scrollController = ScrollController();
+
   @override
   void onInit() async {
     super.onInit();
@@ -27,31 +30,55 @@ class ChatController extends GetxController {
     token = await storage.read(key: "token");
     messageList = await ChatService.getMessageList(token!, userId!, roomId!);
     user = await FriendService.getUserInfo(token!, userId!);
-    print(roomId);
     socket = ChatService.getChatSocket();
-    socket!.emit('joinRoom',{
+    socket!.emit('joinRoom', {
       'username': user!.name,
-      'room': roomId
+      'user_id': userId,
+      'room': roomId,
     });
-    socket!.on('message', (data){
+    socket!.on('message', (data) {
       MessageModel newMessage = MessageModel.fromSocket(data);
       newMessage.sender!.id == userId ? newMessage.isSender = true : false;
       messageList!.add(newMessage);
+      update();
+    });
+    socket!.on('typing', (data) {
+      if (data["id"] != userId) {
+        isTyping = true;
+        update();
+      }
+    });
+    socket!.on('stopTyping', (data) {
+      if (data["id"] != userId) {
+        isTyping = false;
+        update();
+      }
+    });
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
     });
     update();
   }
-  
-  void onSendTap() async {
-    MessageModel message = MessageModel(User.id("618896ed249d4c08b0e85211"), roomId, messageTextConntroller.text);
+
+  Future onSendTap() async {
+    MessageModel message = MessageModel(User.id("618896ed249d4c08b0e85211"),
+        roomId, messageTextConntroller.text);
     messageTextConntroller.clear();
     await ChatService.sendMessage(token!, message);
-    messageList = await ChatService.getMessageList(token!, userId!, roomId!);
     socket!.emit('chatMessage', message.content);
     update();
   }
 
   void deleteMessage(String messageId) async {
-    await ChatService.deleteMessage(token!, messageId); 
+    await ChatService.deleteMessage(token!, messageId);
+    update();
   }
-  
+
+  void onTypingMessage() {
+    socket!.emit('typing', 'typing');
+  }
+
+  void onStopTypingMessage() {
+    socket!.emit('stopTyping', 'stopTyping');
+  }
 }

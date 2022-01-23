@@ -16,6 +16,13 @@ function getCurrentUser(id) {
   return myUser;
 }
 
+function getOtherUser(id) {
+  console.log("users", users);
+  let myUser = users.find(user => user.id !== id);
+  console.log('sao v: ',myUser);
+  return myUser;
+}
+
 // User leaves chat
 function userLeave(id) {
   const index = users.findIndex(user => user.id === id);
@@ -34,5 +41,6 @@ module.exports = {
   userJoin,
   getCurrentUser,
   userLeave,
-  getRoomUsers
+  getRoomUsers,
+  getOtherUser
 };

@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:social_app/controllers/chat/room_chat_controller.dart';
+import 'package:social_app/models/message_model.dart';
+import 'package:social_app/models/room_model.dart';
 import 'package:social_app/models/user.dart';
+import 'package:social_app/screens/chat/chat_screen.dart';
+import 'package:social_app/services/chat_service.dart';
 import 'package:social_app/services/friend_service.dart';
 
 class FriendController extends GetxController {
@@ -31,6 +36,21 @@ class FriendController extends GetxController {
     update();
   }
 
+  Future joinChatRoom(User friend) async {
+    final RoomChatController roomChatController = Get.find<RoomChatController>();
+    String roomId = "";
+    for(RoomModel room in roomChatController.roomChatList!){
+      if(room.memberId.contains(friend.id)){
+        print("match");
+        roomId = room.roomId!;
+      }
+    }
+    if(roomId == ""){
+      roomId = await ChatService.sendMessage(token!, MessageModel(friend, "", "Hello ${friend.name}"));
+    }
+    Get.to(()=>ChatScreen(roomId: roomId, member: friend));
+  }
+
   Future getRequestList() async {
     requestFriendList = await FriendService.getRequestFriendList(token!);
     update();
@@ -39,6 +59,7 @@ class FriendController extends GetxController {
   Future acceptFriend(String userId, bool isAccept) async {
     await FriendService.acceptFriendRequest(token!, userId, isAccept);
     await getRequestList();
+    await getFList();
     update();
   }
   

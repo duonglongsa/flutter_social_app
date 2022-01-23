@@ -5,6 +5,7 @@ import 'package:social_app/controllers/profile/user_profile_controller.dart';
 import 'package:social_app/models/post.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/screens/template_widget.dart';
+import 'package:social_app/services/friend_service.dart';
 import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
@@ -37,11 +38,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       backgroundColor: backGroundColor,
       appBar: AppBar(
         backgroundColor: cointainerColor,
+        title: GetBuilder(
+          init: userProfileController,
+          builder: (_) {
+            if(userProfileController.user == null){
+              return Container();
+            }
+            return Text(userProfileController.user!.name!);
+          }
+        ),
       ),
       body: SingleChildScrollView(
         child: GetBuilder<UserProfleController>(
             init: userProfileController,
-            builder: (context) {
+            builder: (_) {
               if (userProfileController.user != null) {
                 return Column(
                   children: <Widget>[
@@ -76,6 +86,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white)),
                     const SizedBox(height: 20, width: 0),
+                    //ban be
                     if (userProfileController.user!.type! == 1)
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -85,7 +96,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Expanded(
                               child: TextButton.icon(
                                 onPressed: () {
-                                  userProfileController.blockUser();
+                                  
                                 },
                                 label: const Text(
                                   'Message',
@@ -113,14 +124,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
-                                      Colors.red[700])),
+                                      Colors.orange[700])),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
                             TextButton.icon(
-                              onPressed: () {
-                                userProfileController.blockUser();
+                              onPressed: () async {
+                                await userProfileController.blockUser();
+                                showMessage("User blocked!", context);
                               },
                               label: const Text(
                                 'Block',
@@ -137,6 +149,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ],
                         ),
                       ),
+                    //nguoi la
                     if (userProfileController.user!.type! == 2)
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -145,8 +158,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           children: [
                             Expanded(
                               child: TextButton.icon(
-                                onPressed: () {
-                                  userProfileController.blockUser();
+                                onPressed: () async {
+                                  await userProfileController.sendFriendRequset();
+                                  showMessage("Request sent!", context);
                                 },
                                 label: const Text(
                                   'Send friend request',
@@ -165,7 +179,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               width: 10,
                             ),
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () async {
+                                await userProfileController.blockUser();
+                                showMessage("User blocked!", context);
+                              },
                               label: const Text(
                                 'Block',
                                 style: TextStyle(color: Colors.white),
@@ -186,7 +203,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     if (userProfileController.user!.type! == 0)
                       createPostWidget(
                           userAvatar:
-                              userProfileController.user!.avatar!.fileName!),
+                              userProfileController.user!.avatar!.fileName!,
+                          getPostList: () {
+                            userProfileController.getProfilePost(widget.userId);
+                          }),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -202,7 +222,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ],
                 );
               } else {
-                return Container();
+                return const Padding(
+                  padding:  EdgeInsets.only(top: 200),
+                  child: Center(child: CircularProgressIndicator()),
+                );
               }
             }),
       ),

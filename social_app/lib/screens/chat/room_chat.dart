@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social_app/controllers/chat/room_chat_controller.dart';
+import 'package:social_app/models/message_model.dart';
 import 'package:social_app/models/room_model.dart';
 import 'package:social_app/screens/chat/chat_screen.dart';
+import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class ContactsScreen extends StatefulWidget {
   @override
@@ -72,10 +75,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
     return GestureDetector(
       onTap: () {
-        Get.to(() => ChatScreen(
-              roomId: room.roomId!,
-              roomName: room.memberName[0],
-            ));
+        Get.to(() => ChatScreen(roomId: room.roomId!, member: room.member[0]))!
+            .then((result) {
+          room.lastMessage = result as MessageModel;
+          roomChatController.sortRoomChat();
+          roomChatController.update();
+        });
       },
       onTapDown: (TapDownDetails details) => _onTapDown(details),
       onLongPress: () {
@@ -106,16 +111,33 @@ class _ContactsScreenState extends State<ContactsScreen> {
         color: backGroundColor,
         //elevation: 3,
         child: ListTile(
-          leading: const CircleAvatar(
+          leading: CircleAvatar(
             radius: 30,
             backgroundColor: Colors.white,
+            backgroundImage:
+                NetworkImage("$networkFile${room.member[0].avatar!.fileName}"),
           ),
           title: Text(
-            room.memberName[0],
+            room.member[0].name!,
             style: const TextStyle(color: Colors.white),
           ),
-          subtitle: Text(room.lastMessage.content!,
-              style: const TextStyle(color: Colors.grey)),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 100,
+                child: RichText(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                      text: room.lastMessage.content!,
+                      style: const TextStyle(color: Colors.grey)),
+                ),
+              ),
+              Text(timeago.format(room.lastMessage.timeCreated!),
+                  style: const TextStyle(color: Colors.grey)),
+            ],
+          ),
         ),
       ),
     );

@@ -11,6 +11,7 @@ const http = require("http");
 const {
 	userJoin,
 	getCurrentUser,
+	getOtherUser,
 	userLeave,
 	getRoomUsers,
 } = require("./utils/usersGroupRealtime");
@@ -146,8 +147,26 @@ io.on("connection", function (socket) {
 		});
 	});
 
+	socket.on("typing", (msg) => {
+		const user = getCurrentUser(socket.id);
+		console.log("typing",user);
+		io.to(user.room).emit("typing", {
+			typing: "typing...",
+			id: user.user_id 
+		});
+	});
+	socket.on("stopTyping", (msg) => {
+		const user = getCurrentUser(socket.id);
+		console.log("stop");
+		io.to(user.room).emit("stopTyping", {
+			typing: "typing...",
+			id: user.user_id 
+		});
+	});
+
 	socket.on("chatMessage", (msg) => {
 		const user = getCurrentUser(socket.id);
+		console.log(user.username);
 		io.to(user.room).emit("message", formatMessage(user.user_id,user.username, msg));
 	});
 

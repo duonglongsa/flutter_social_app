@@ -1,10 +1,15 @@
+// ignore_for_file: unnecessary_string_interpolations
+
+import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:social_app/controllers/profile/user_profile_controller.dart';
 import 'package:social_app/models/comment_model.dart';
@@ -20,7 +25,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'create_post/create_post_screen.dart';
 
-Widget createPostWidget({required String userAvatar}) {
+Widget createPostWidget({required String userAvatar, required VoidCallback getPostList}) {
   return Card(
     elevation: 5,
     child: Container(
@@ -28,7 +33,9 @@ Widget createPostWidget({required String userAvatar}) {
       color: cointainerColor,
       child: InkWell(
         onTap: () {
-          Get.to(() => const CreatePostScreen());
+          Get.to(() => const CreatePostScreen())!.then((value) {
+            getPostList;
+          });
         },
         child: Column(
           children: [
@@ -190,8 +197,10 @@ Widget post(
                 if (post.image != null && post.image!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child:
-                        Image.network("$networkFile${post.image![0].fileName}"),
+                    child: ImageGridTemplate(
+                        listImagePath: post.image!
+                            .map((e) => "$networkFile${e.fileName}")
+                            .toList()),
                   ),
                 const SizedBox(
                   height: 5,
@@ -328,6 +337,307 @@ Widget post(
   );
 }
 
+void showMessage(String message, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text(
+      message,
+      style: const TextStyle(color: Colors.black),
+    ),
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    ),
+    backgroundColor: Colors.grey[200],
+  ));
+}
+
+class ImageGridTemplate extends StatelessWidget {
+  final List<String> listImagePath;
+  Map<String, double> aspectRaito = {};
+  int numberOfVerticalImage = 0;
+  //BuildContext context;
+
+  ImageGridTemplate({Key? key, required this.listImagePath}) : super(key: key);
+
+  Future<double> _calculateNetWorkImage(String link) {
+    Completer<double> completer = Completer();
+    Image image = Image.network(link);
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (ImageInfo image, bool synchronousCall) {
+          var myImage = image.image;
+          double aspectRaito =
+              myImage.width.toDouble() / myImage.height.toDouble();
+          completer.complete(aspectRaito);
+        },
+      ),
+    );
+    return completer.future;
+  }
+
+  Future calculateAspectRaito() async {
+    for (int i = 0; i < listImagePath.length; i++) {
+      aspectRaito[listImagePath[i]] =
+          await _calculateNetWorkImage(listImagePath[i]);
+
+      if (aspectRaito[listImagePath[i]]! < 4 / 3) {
+        numberOfVerticalImage++;
+      }
+    }
+    listImagePath.sort((a, b) {
+      return aspectRaito["$a"]!.compareTo(aspectRaito["$b"]!);
+    });
+    //(context as Element).markNeedsBuild();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: calculateAspectRaito(),
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        // if(!snapshot.hasData){
+        //   return Container();
+        // }
+        switch (listImagePath.length) {
+          case 1:
+            return StaggeredGrid.count(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  if (aspectRaito['${listImagePath[0]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 4,
+                        mainAxisCellCount:
+                            4 / aspectRaito['${listImagePath[0]}']!,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[0]}']!,
+                            aspectRaito: aspectRaito['${listImagePath[0]}']!,
+                            imageFile: listImagePath[0]))
+                ]);
+          case 2:
+            return StaggeredGrid.count(
+                crossAxisCount: 6,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  if (aspectRaito['${listImagePath[0]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 3,
+                        mainAxisCellCount: 4,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[0]}']!,
+                            aspectRaito: 3 / 4,
+                            imageFile: listImagePath[0])),
+                  if (aspectRaito['${listImagePath[1]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 3,
+                        mainAxisCellCount: 4,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[1]}']!,
+                            aspectRaito: 3 / 4,
+                            imageFile: listImagePath[1])),
+                ]);
+
+          case 3:
+            if (numberOfVerticalImage == 3) {
+              return StaggeredGrid.count(
+                  crossAxisCount: 9,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    if (aspectRaito['${listImagePath[0]}'] != null)
+                      StaggeredGridTile.count(
+                          crossAxisCellCount: 3,
+                          mainAxisCellCount: 4,
+                          child: _singleImage(
+                              imageAspectRaito:
+                                  aspectRaito['${listImagePath[0]}']!,
+                              aspectRaito: 3 / 4,
+                              imageFile: listImagePath[0])),
+                    if (aspectRaito['${listImagePath[1]}'] != null)
+                      StaggeredGridTile.count(
+                          crossAxisCellCount: 3,
+                          mainAxisCellCount: 4,
+                          child: _singleImage(
+                              imageAspectRaito:
+                                  aspectRaito['${listImagePath[1]}']!,
+                              aspectRaito: 3 / 4,
+                              imageFile: listImagePath[1])),
+                    if (aspectRaito['${listImagePath[2]}'] != null)
+                      StaggeredGridTile.count(
+                          crossAxisCellCount: 3,
+                          mainAxisCellCount: 4,
+                          child: _singleImage(
+                              imageAspectRaito:
+                                  aspectRaito['${listImagePath[2]}']!,
+                              aspectRaito: 3 / 4,
+                              imageFile: listImagePath[2])),
+                  ]);
+            } else {
+              return StaggeredGrid.count(
+                  crossAxisCount: 6,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    if (aspectRaito['${listImagePath[0]}'] != null)
+                      StaggeredGridTile.count(
+                          crossAxisCellCount: 3,
+                          mainAxisCellCount: 4,
+                          child: _singleImage(
+                              imageAspectRaito:
+                                  aspectRaito['${listImagePath[0]}']!,
+                              aspectRaito: 3 / 4,
+                              imageFile: listImagePath[0])),
+                    if (aspectRaito['${listImagePath[1]}'] != null)
+                      StaggeredGridTile.count(
+                          crossAxisCellCount: 3,
+                          mainAxisCellCount: 4,
+                          child: _singleImage(
+                              imageAspectRaito:
+                                  aspectRaito['${listImagePath[1]}']!,
+                              aspectRaito: 3 / 4,
+                              imageFile: listImagePath[1])),
+                    if (aspectRaito['${listImagePath[2]}'] != null)
+                      StaggeredGridTile.count(
+                          crossAxisCellCount: 6,
+                          mainAxisCellCount: 4.5,
+                          child: _singleImage(
+                              imageAspectRaito:
+                                  aspectRaito['${listImagePath[2]}']!,
+                              aspectRaito: 4 / 3,
+                              imageFile: listImagePath[2])),
+                  ]);
+            }
+          case 4:
+            return StaggeredGrid.count(
+                crossAxisCount: 6,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  if (aspectRaito['${listImagePath[0]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 3,
+                        mainAxisCellCount: 3,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[0]}']!,
+                            aspectRaito: 3 / 3,
+                            imageFile: listImagePath[0])),
+                  if (aspectRaito['${listImagePath[1]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 3,
+                        mainAxisCellCount: 3,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[1]}']!,
+                            aspectRaito: 3 / 3,
+                            imageFile: listImagePath[1])),
+                  if (aspectRaito['${listImagePath[2]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 3,
+                        mainAxisCellCount: 3,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[2]}']!,
+                            aspectRaito: 3 / 3,
+                            imageFile: listImagePath[2])),
+                  if (aspectRaito['${listImagePath[3]}'] != null)
+                    StaggeredGridTile.count(
+                        crossAxisCellCount: 3,
+                        mainAxisCellCount: 3,
+                        child: _singleImage(
+                            imageAspectRaito:
+                                aspectRaito['${listImagePath[3]}']!,
+                            aspectRaito: 3 / 3,
+                            imageFile: listImagePath[3])),
+                ]);
+
+          default:
+            return Container();
+        }
+      },
+    );
+  }
+
+  Widget _singleImage(
+      {required double imageAspectRaito,
+      required double aspectRaito,
+      required String imageFile}) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => DetailScreen(imageLink: imageFile));
+      },
+      child: Hero(
+        tag: imageFile,
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: imageAspectRaito < aspectRaito
+                  ? BoxFit.fitWidth
+                  : BoxFit.fitHeight,
+              alignment: FractionalOffset.center,
+              image: NetworkImage(
+                imageFile,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DetailScreen extends StatelessWidget {
+  final String imageLink;
+
+  const DetailScreen({Key? key, required this.imageLink}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: GestureDetector(
+          child: Stack(
+            children: [
+              Container(
+                color: backGroundColor,
+                child: Center(
+                  child: Hero(
+                    tag: imageLink,
+                    child: Image.network(
+                      imageLink,
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                  alignment: Alignment.topRight,
+                  child: FlatButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 25.0,
+                    ),
+                    shape: const CircleBorder(),
+                    color: Colors.black12,
+                  )),
+            ],
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+}
+
 Widget commentWidget({
   required BuildContext context,
   required User user,
@@ -432,7 +742,10 @@ void _showOthersPostOption(BuildContext context, String postId) {
                   "Report",
                   style: TextStyle(color: Colors.white),
                 ),
-                onTap: () => _showRepostForm(context, postId),
+                onTap: () {
+                  Get.back();
+                  _showRepostForm(context, postId);
+                },
               ),
             ],
           ),
@@ -456,7 +769,10 @@ void _showLikeList(BuildContext context, List<User> likedUsers) {
             children: [
               const Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Users liked this post:', style: kLabelStyle, ),
+                child: Text(
+                  'Users liked this post:',
+                  style: kLabelStyle,
+                ),
               ),
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -542,7 +858,9 @@ void _showRepostForm(BuildContext context, String postId) {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.back(closeOverlays: true);
+                      },
                       child: const Text(
                         "Cancel",
                         style: TextStyle(
@@ -553,14 +871,15 @@ void _showRepostForm(BuildContext context, String postId) {
                     TextButton(
                       onPressed: () async {
                         String? token =
-                            await FlutterSecureStorage().read(key: 'token');
-                        print(token);
+                            await const FlutterSecureStorage().read(key: 'token');
                         PostService.reportPost(
                           postId,
                           subjectTextController.text,
                           detailsTextController.text,
                           token!,
                         );
+                        Get.back();
+                        showMessage("Report successful", context);
                       },
                       child: const Text(
                         "Report",
@@ -623,13 +942,10 @@ void _showPostOption(BuildContext context, String postId) {
 }
 
 void _selectedDeletePost(String postId) async {
-  print(postId);
   String? token = await const FlutterSecureStorage().read(key: 'token');
 
   await PostService.deletePost(postId, token!);
-
   final homeController = Get.find<HomeController>();
-  print("before" + homeController.postList!.length.toString());
+  Get.back();
   homeController.removePostFromList(postId);
-  print("after" + homeController.postList!.length.toString());
 }

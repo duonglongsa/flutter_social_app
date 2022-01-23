@@ -16,7 +16,6 @@ class PostService {
       'Accept': 'application/json',
     });
     var responseJson = json.decode(res.body);
-    //log(res.body);
     return (responseJson["data"] as List).map((p) => Post.fromJson(p)).toList();
   }
 
@@ -28,6 +27,8 @@ class PostService {
     // print(base64Image);
 
     // List<String> images = [base64Image];
+    List<String> test = ["abc","xyz","123"];
+    
     var res = await http.post(
         Uri.parse(localhost + "/v1/posts/create?userId=" + post.userId!),
         headers: {

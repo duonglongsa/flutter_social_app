@@ -33,6 +33,8 @@ class Post {
         countLikes = (json["like"] as List).length,
         likedUserId = json["like"],
         isLike = json["isLike"],
-        image = (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList();
+        image = (json['images'] as List).map((e) => ImageModel.fromJson(e)).toList(){
+         // print(image!.length);
+        }
 
 }

@@ -19,17 +19,16 @@ Widget signupNameTF(SignupController signupController) {
         style: kLabelStyle,
       ),
       const SizedBox(height: 10.0),
-      Form(
-        child: TextFormField(
-          controller: signupController.nameController,
-          onChanged: (value) {},
-          keyboardType: TextInputType.emailAddress,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'OpenSans',
-          ),
-          decoration: nameInputDecoration,
+      TextFormField(
+        validator: (value) => signupController.validateName(value!),
+        controller: signupController.nameController,
+        onChanged: (value) {},
+        keyboardType: TextInputType.emailAddress,
+        style: const TextStyle(
+          color: Colors.white,
+          fontFamily: 'OpenSans',
         ),
+        decoration: nameInputDecoration,
       ),
     ],
   );
@@ -44,17 +43,16 @@ Widget signupPhoneTF(SignupController signupController) {
         style: kLabelStyle,
       ),
       const SizedBox(height: 10.0),
-      Form(
-        child: TextFormField(
-          controller: signupController.phoneController,
-          onChanged: (value) {},
-          keyboardType: TextInputType.emailAddress,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'OpenSans',
-          ),
-          decoration: emailInputDecoration,
+      TextFormField(
+        validator: (value) => signupController.validatePhoneNumber(value!),
+        controller: signupController.phoneController,
+        onChanged: (value) {},
+        keyboardType: TextInputType.emailAddress,
+        style: const TextStyle(
+          color: Colors.white,
+          fontFamily: 'OpenSans',
         ),
+        decoration: emailInputDecoration,
       ),
     ],
   );
@@ -69,23 +67,22 @@ Widget signupPasswordTF(SignupController signupController) {
         style: kLabelStyle,
       ),
       const SizedBox(height: 10.0),
-      Form(
-        child: TextFormField(
-          controller: signupController.passwordController,
-          obscureText: true,
-          onChanged: (value) {},
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'OpenSans',
-          ),
-          decoration: passwordInputDecoration,
+      TextFormField(
+        validator: (value) => signupController.validatePassword(value!),
+        controller: signupController.passwordController,
+        obscureText: true,
+        onChanged: (value) {},
+        style: const TextStyle(
+          color: Colors.white,
+          fontFamily: 'OpenSans',
         ),
+        decoration: passwordInputDecoration,
       ),
     ],
   );
 }
 
-Widget confirmPasswordTF() {
+Widget confirmPasswordTF(SignupController signupController) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -94,15 +91,15 @@ Widget confirmPasswordTF() {
         style: kLabelStyle,
       ),
       const SizedBox(height: 10.0),
-      Form(
-        child: TextFormField(
-          obscureText: true,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'OpenSans',
-          ),
-          decoration: passwordInputDecoration,
+      TextFormField(
+        controller: signupController.confirmPassWordController,
+        validator: (value) => signupController.validateConfirmPassword(value!),
+        obscureText: true,
+        style: const TextStyle(
+          color: Colors.white,
+          fontFamily: 'OpenSans',
         ),
+        decoration: passwordInputDecoration,
       ),
     ],
   );
@@ -116,40 +113,38 @@ Widget registerBtn(SignupController signupController) {
     child: RaisedButton(
       elevation: 5.0,
       onPressed: () async {
-        final res = await AuthService.register(User(
-            signupController.nameController.text,
-            signupController.phoneController.text,
-            signupController.passwordController.text));
-            print("123213");
-        if (res.statusCode == 201) {
-          Get.defaultDialog(
-              title: 'Successful register',
-              middleText: 'Back to login page?',
-              textConfirm: 'OK',
-              onConfirm: () {
-                Get.back();
-              },
-              textCancel: 'Cancel',
-              onCancel: () {
-
-              }
-          );
-        } else {
-          Get.defaultDialog(
-              title: 'Error',
-              middleText: json.decode(res.body)["message"],
-              textConfirm: 'OK',
-              onConfirm: () {
-                Get.back();
-              },
-              textCancel: 'Cancel',
-              onCancel: () {
-
-              }
-          );
+        if (signupController.validateSignup()) {
+          signupController.isLoading = true;
+          signupController.update();
+          final res = await AuthService.register(User(
+              signupController.nameController.text,
+              signupController.phoneController.text,
+              signupController.passwordController.text));
+          signupController.isLoading = false;
+          signupController.update();
+          if (res.statusCode == 201) {
+            Get.defaultDialog(
+                title: 'Successful register',
+                middleText: 'Back to login page?',
+                textConfirm: 'OK',
+                onConfirm: () {
+                  Get.back(closeOverlays: true);
+                },
+                textCancel: 'Cancel',
+                onCancel: () {});
+          } else {
+            Get.defaultDialog(
+                title: 'Error',
+                middleText: json.decode(res.body)["message"],
+                textConfirm: 'OK',
+                onConfirm: () {
+                  Get.back();
+                },
+                textCancel: 'Cancel',
+                onCancel: () {});
+          }
         }
       },
-      
       padding: const EdgeInsets.all(15.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),

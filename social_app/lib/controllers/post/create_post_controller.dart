@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,7 @@ class CreatePostController extends GetxController {
   final TextEditingController describedController = TextEditingController();
   List<File> imagePath = [];
   String videoPath = '';
+  bool isLoading = false;
 
   @override
   void onInit() async {
@@ -24,15 +24,21 @@ class CreatePostController extends GetxController {
     super.onInit();
   }
 
-  void addPost() async {
+  Future addPost() async {
+    isLoading = true;
+    update();
     List<ImageModel> base64Image = [];
     for (File file in imagePath) {
       List<int> bytes = await file.readAsBytes();
       String img64 = base64Encode(bytes);
       base64Image.add(ImageModel("data:image/jpeg;base64," + img64));
     }
+    print(base64Image.length);
     await PostService.createPost(
         Post(userId, describedController.text, base64Image, videoPath), token!);
+    isLoading = false;
+    update();
+    Get.back();
   }
 
   void pickImage(BuildContext context) async {
@@ -59,6 +65,7 @@ class CreatePostController extends GetxController {
                   onTap: () async {
                     XFile? image = await ImagePicker()
                         .pickImage(source: ImageSource.camera);
+                    Get.back();
                     imagePath.add(File(image!.path));
                     update();
                   },
@@ -77,6 +84,7 @@ class CreatePostController extends GetxController {
                     for (XFile image in images!) {
                       imagePath.add(File(image.path));
                     }
+                    Get.back();
                     update();
                   },
                 ),

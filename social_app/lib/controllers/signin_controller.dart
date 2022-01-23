@@ -7,13 +7,17 @@ import 'package:social_app/models/user.dart';
 import 'package:social_app/screens/home_page/home_page_screen.dart';
 import 'package:social_app/screens/navigation_screen.dart';
 import 'package:social_app/screens/sign_up/signup_screen.dart';
+import 'package:social_app/screens/template_widget.dart';
 import 'package:social_app/services/auth.dart';
 
 class SigninController extends GetxController {
   final storage = const FlutterSecureStorage();
 
+  BuildContext? context;
+
   User? user;
   bool isRememberMe = false;
+  bool isLoading = false;
 
   final loginFormKey = GlobalKey<FormState>();
 
@@ -22,12 +26,13 @@ class SigninController extends GetxController {
 
   bool isObscureText = true;
 
-  void pressSignin() async {
+  Future pressSignin() async {
+    isLoading = true;
+    update();
     var res = await AuthService.login(phoneController.text, passwordController.text);
     if (res.statusCode == 200) {
+      showMessage("Login successfull!", context!);
       user = User.fromLoginJson(json.decode(res.body));
-      print(user!.id);
-      print(user!.token);
       await storage.write(key: 'token', value: user!.token);
       await storage.write(key: 'userId', value: user!.id);
       Get.to(() => NavScreen());
@@ -41,7 +46,8 @@ class SigninController extends GetxController {
         },
       );
     }
-    print(res.statusCode);
+    isLoading = false;
+    update();
   }
 
   void pressSignup() {

@@ -28,7 +28,7 @@ class ChatService {
     }).toList();
   }
 
-  static Future<void> sendMessage(String token, MessageModel message) async {
+  static Future<String> sendMessage(String token, MessageModel message) async {
     var res =
         await http.post(Uri.parse(localhost + "/v1/chats/send"), headers: {
       'Context-Type': 'application/json;charSet=UTF-8',
@@ -43,8 +43,7 @@ class ChatService {
     });
 
     var responseJson = json.decode(res.body);
-    print(res.statusCode);
-    print(responseJson["data"].toString());
+    return responseJson["data"]["chat"]["_id"];
   }
 
   static Future<List<RoomModel>> getChatRoomList(
@@ -64,8 +63,7 @@ class ChatService {
     for (RoomModel room in roomList) {
       room.memberId.remove(userId);
       for (String userId in room.memberId) {
-        room.memberName
-            .add(((await FriendService.getUserInfo(token, userId)).name!));
+        room.member.add(((await FriendService.getUserInfo(token, userId))));
       }
     }
 
@@ -97,6 +95,7 @@ class ChatService {
   }
 
   static IO.Socket getChatSocket() {
+    print("123");
     IO.Socket socket = IO.io(
         'http://192.168.1.3:3500',
         OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM

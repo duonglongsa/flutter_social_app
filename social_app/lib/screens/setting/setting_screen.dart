@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social_app/controllers/setting/setting_controller.dart';
 import 'package:social_app/screens/setting/edit_profile_screen.dart';
+import 'package:social_app/screens/user_profile/user_profile_screen.dart';
 import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
@@ -63,7 +64,9 @@ class _SettingScreenState extends State<SettingScreen> {
                         padding: const EdgeInsets.fromLTRB(20, 20, 70, 20),
                         elevation: 0,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(()=>UserProfileScreen(userId: settingController.userId!,));
+                      },
                       child: Align(
                           alignment: Alignment.centerLeft,
                           child: Row(children: const [

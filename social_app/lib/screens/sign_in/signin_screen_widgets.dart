@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:social_app/controllers/signin_controller.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
+import '../template_widget.dart';
+
 
 Widget signinPhoneTF({
   required SigninController signinController,
@@ -143,8 +145,8 @@ Widget signinBtn({
     // ignore: deprecated_member_use
     child: RaisedButton(
       elevation: 5.0,
-      onPressed: () {
-        signinController.pressSignin();
+      onPressed: () async {
+        await signinController.pressSignin();
       },
       padding: const EdgeInsets.all(15.0),
       shape: RoundedRectangleBorder(

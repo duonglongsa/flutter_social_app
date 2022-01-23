@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:social_app/controllers/post/create_post_controller.dart';
+import 'package:social_app/screens/template_widget.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -20,129 +22,130 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: cointainerColor,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () => createPostController.back(),
-          ),
-          title: const Text(
-            'Create post',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => createPostController.addPost(),
-              child: const Text(
-                'POST',
-                style: TextStyle(
-                  color: Colors.white,
+    return GetBuilder(
+      init: createPostController,
+      builder: (_) {
+        return LoadingOverlay(
+          isLoading: createPostController.isLoading,
+          child: SafeArea(
+            child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              appBar: AppBar(
+                backgroundColor: cointainerColor,
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    print("back");
+                  },
                 ),
-              ),
-            ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            Container(
-              color: backGroundColor,
-            ),
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: createPostController.describedController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      style: const TextStyle(
+                title: const Text(
+                  'Create post',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      await createPostController.addPost();
+                      showMessage("Create post successful", context);
+                    },
+                    child: const Text(
+                      'POST',
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: "What is on your mind?",
-                        hintStyle: kHintTextStyle,
-                        border: InputBorder.none,
                       ),
                     ),
-                    GetBuilder(
-                      init: createPostController,
-                      builder: (_) => createPostController.imagePath != []
-                          // ? ListView.builder(
-                          //     physics: const NeverScrollableScrollPhysics(),
-                          //     shrinkWrap: true,
-                          //     itemCount: createPostController.imagePath.length,
-                          //     itemBuilder: (context, index) {
-                          //       decodeImageFromList(createPostController.imagePath[index].readAsBytesSync())
-                          //       .then((value) => print("${value.height} ${value.as}"));
-                          //       //print(cr);
-                          //       Image image = Image.file(
-                          //           createPostController.imagePath[index],);
-                          //       return image;
-                          //     },
-                          //   )
-                          ? ImageGridView(
-                              context: context,
-                              listImagePath: createPostController.imagePath)
-                          : Container(
-                              color: backGroundColor,
+                  ),
+                ],
+              ),
+              body: Stack(
+                children: [
+                  Container(
+                    color: backGroundColor,
+                  ),
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: createPostController.describedController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
                             ),
+                            decoration: const InputDecoration(
+                              hintText: "What is on your mind?",
+                              hintStyle: kHintTextStyle,
+                              border: InputBorder.none,
+                            ),
+                          ),
+                          GetBuilder(
+                            init: createPostController,
+                            builder: (_) => createPostController.imagePath != []
+                               
+                                ? ImageGridView(
+                                    listImagePath: createPostController.imagePath,
+                                    context: context,)
+                                : Container(
+                                    color: backGroundColor,
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              bottomNavigationBar: Container(
+                color: cointainerColor,
+                height: 40.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FlatButton.icon(
+                      onPressed: () => createPostController.pickImage(context),
+                      icon: const Icon(
+                        Icons.photo_library,
+                        color: Colors.green,
+                      ),
+                      label: const Text(
+                        'Photo',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const VerticalDivider(
+                      width: 8.0,
+                      color: Colors.white10,
+                    ),
+                    FlatButton.icon(
+                      onPressed: () => print('Video'),
+                      icon: const Icon(
+                        Icons.video_library,
+                        color: Colors.purpleAccent,
+                      ),
+                      label: const Text(
+                        'Video',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
-        bottomNavigationBar: Container(
-          color: cointainerColor,
-          height: 40.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FlatButton.icon(
-                onPressed: () => createPostController.pickImage(context),
-                icon: const Icon(
-                  Icons.photo_library,
-                  color: Colors.green,
-                ),
-                label: const Text(
-                  'Photo',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const VerticalDivider(
-                width: 8.0,
-                color: Colors.white10,
-              ),
-              FlatButton.icon(
-                onPressed: () => print('Video'),
-                icon: const Icon(
-                  Icons.video_library,
-                  color: Colors.purpleAccent,
-                ),
-                label: const Text(
-                  'Video',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
@@ -170,7 +173,6 @@ class ImageGridView extends StatelessWidget {
     listImagePath.sort((a, b) {
       return aspectRaito["$a"]!.compareTo(aspectRaito["$b"]!);
     });
-    (context as Element).markNeedsBuild();
   }
 
   @override
@@ -368,6 +370,7 @@ class ImageGridView extends StatelessWidget {
               onPressed: () async {
                 listImagePath.remove(imageFile);
                 await calculateAspectRaito();
+                (context as Element).markNeedsBuild();
               },
               child: const Icon(
                 Icons.close,

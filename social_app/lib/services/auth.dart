@@ -46,8 +46,8 @@ class AuthService {
           "address": user.address,
           "city": user.city,
           "country": user.country,
-          //"avatar": user.avatar!.toJson(),
-          //"cover_image": user.coverImage!.toJson(),
+          "avatar": user.avatar!.base64 ?? "",
+          "cover_image": user.coverImage!.base64 ?? "",
         });
     print(res.body);
     return res;

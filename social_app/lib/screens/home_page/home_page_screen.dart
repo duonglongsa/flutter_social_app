@@ -46,6 +46,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    homeController.context = context;
     return SafeArea(
       child: Scaffold(
         backgroundColor: backGroundColor,
@@ -66,46 +67,51 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
           ],
         ), //resizeToAvoidBottomInset: false,
-        body: Center(
-          child: RefreshIndicator(
-            onRefresh: () => homeController.getList(),
-            backgroundColor: backGroundColor,
-            child: SingleChildScrollView(
-              //controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: GetBuilder<HomeController>(
-                  init: homeController,
-                  builder: (_) {
-                    if (homeController.postList == null &&
-                        homeController.currentUser == null) {
-                      return const CircularProgressIndicator();
-                    } else {
-                      return Column(
-                        children: [
-                          createPostWidget(
-                              userAvatar: homeController.currentUser!.avatar!.fileName!),
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: homeController.postList!.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () => Get.to(() => PostScreen(
-                                      post: homeController.postList![index],
-                                    )),
-                                child: post(
-                                  postColor: cointainerColor,
-                                  context: context,
-                                  post: homeController.postList![index],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    }
-                  }),
-            ),
+        body: RefreshIndicator(
+          onRefresh: () => homeController.getList(),
+          backgroundColor: backGroundColor,
+          child: SingleChildScrollView(
+            //controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: GetBuilder<HomeController>(
+                init: homeController,
+                builder: (_) {
+                  if (homeController.postList == null &&
+                      homeController.currentUser == null) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 200),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        createPostWidget(
+                            userAvatar:
+                                homeController.currentUser!.avatar!.fileName!,
+                            getPostList: () async {
+                              homeController.getList;
+                            }),
+                        ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: homeController.postList!.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () => Get.to(() => PostScreen(
+                                    post: homeController.postList![index],
+                                  )),
+                              child: post(
+                                postColor: cointainerColor,
+                                context: context,
+                                post: homeController.postList![index],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                }),
           ),
         ),
         floatingActionButton: _showBackToTopButton == false

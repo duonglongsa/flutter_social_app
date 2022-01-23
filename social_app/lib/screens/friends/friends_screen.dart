@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:social_app/controllers/friend/friend_screen_controller.dart';
 import 'package:social_app/models/user.dart';
 import 'package:social_app/screens/friends/search_friends_screen.dart';
+import 'package:social_app/screens/template_widget.dart';
 import 'package:social_app/utilities/configs.dart';
 import 'package:social_app/utilities/style_constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -156,7 +157,14 @@ class _FriendScreenState extends State<FriendScreen>
           user.name!,
           style: kLabelStyle,
         ),
-        //trailing: TextButton(onPressed: () {}, child: Text("Add")),
+        trailing: IconButton(
+            onPressed: () async {
+              await friendController.joinChatRoom(user);
+            },
+            icon: const Icon(
+              Icons.message_outlined,
+              color: Colors.white,
+            )),
       ),
     );
   }
@@ -182,15 +190,17 @@ class _FriendScreenState extends State<FriendScreen>
           children: [
             TextButton(
                 onPressed: () async {
-                  friendController.acceptFriend(user.id!, true);
+                  await friendController.acceptFriend(user.id!, true);
+                  showMessage("Friend acepted!", context);
                 },
                 child: const Text("Accept")),
             TextButton(
                 onPressed: () async {
-                  friendController.acceptFriend(user.id!, false);
+                  await friendController.acceptFriend(user.id!, false);
+                  showMessage("Friend denied!", context);
                 },
                 child: const Text(
-                  "Delete",
+                  "Deny",
                   style: TextStyle(color: Colors.red),
                 )),
           ],

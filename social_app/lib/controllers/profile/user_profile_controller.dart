@@ -26,14 +26,19 @@ class UserProfleController extends GetxController {
     update();
   }
 
-  void getProfilePost(String profileId) async {
+  Future getProfilePost(String profileId) async {
     postList = await PostService.getPostList(token!, "?userId=$profileId");
     postList = postList.reversed.toList();
     update();
   }
 
-  void blockUser() async {
+  Future blockUser() async {
     await FriendService.blockUser(token!, user!.id!);
+    update();
+  }
+
+  Future sendFriendRequset() async {
+    await FriendService.sendRequestFriend(token!, userId!);
     update();
   }
 

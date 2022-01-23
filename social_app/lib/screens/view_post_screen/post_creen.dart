@@ -35,7 +35,6 @@ class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
     super.initState();
-    print("init");
     initController();
   }
 
@@ -70,10 +69,15 @@ class _PostScreenState extends State<PostScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    post(
-                      postColor: backGroundColor,
-                      context: context,
-                      post: widget.post,
+                    GetBuilder(
+                      init: postController,
+                      builder: (_) {
+                        return post(
+                          postColor: backGroundColor,
+                          context: context,
+                          post: widget.post,
+                        );
+                      }
                     ),
                     const SizedBox(
                       height: 10,
@@ -98,7 +102,8 @@ class _PostScreenState extends State<PostScreen> {
                                       context: context,
                                       user: postController
                                           .commentList![index].user!,
-                                      comment: postController.commentList![index],
+                                      comment:
+                                          postController.commentList![index],
                                     ),
                                   );
                                 },
@@ -150,8 +155,9 @@ class _PostScreenState extends State<PostScreen> {
                       postController.token!,
                     );
                     postController.commentController.text = "";
-                    postController.getCommentList();
-                    widget.post.countComments = widget.post.countComments!+ 1;
+                    widget.post.countComments = widget.post.countComments! + 1;
+                    await postController.getCommentList();
+                    showMessage("Comment successful!", context);
                   },
                   icon: const Icon(
                     Icons.send,

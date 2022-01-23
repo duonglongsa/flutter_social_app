@@ -25,7 +25,7 @@ class RoomModel {
   //ChatType type;
   DateTime createdAt, updatedAt;
   MessageModel lastMessage;
-  List<String> memberName = [];
+  List<User> member= [];
 
   //["data"]["chat"]
   RoomModel.fromJson(Map<String, dynamic> json)

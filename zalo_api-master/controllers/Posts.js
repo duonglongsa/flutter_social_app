@@ -21,19 +21,22 @@ postsController.create = async (req, res, next) => {
         let images = req.body.images;
         let dataImages = [];
         
-        // images = Array.from(images);
-        // console.log(typeof images);
-        images = images.slice(1);
-        images = images.slice(0, -1);
+        // // images = Array.from(images);
+        // // console.log(typeof images);
+        // images = images.slice(1);
+        // images = images.slice(0, -1);
+        // var array = JSON.parse("[" + images + "]");
         images = images.split('","');
+        images[images.length-1] = images[images.length-1].slice(0,-2);
+        images[0] = images[0].slice(2);
+        console.log(images[0].substring(0,5));
         if (Array.isArray(images)) {
-            console.log('anh la mang')
+            console.log('anh la array');
+            let i = 0;
             for (let image of images) {
-                image = image.slice(1);
-                image = image.slice(0,-1);
+                i++;
                 if (uploadFile.matchesFileBase64(image) !== false) {
-                    console.log('anh la match file base 64');
-
+                    console.log(i + 'anh la match file base 64');
                     const imageResult = uploadFile.uploadFile(image);
                     if (imageResult !== false) {
                         console.log('anh upload');
