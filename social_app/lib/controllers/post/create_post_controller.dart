@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_app/models/image.dart';
 import 'package:social_app/models/post.dart';
+import 'package:social_app/screens/template_widget.dart';
 import 'package:social_app/services/post_service.dart';
 import 'package:social_app/utilities/style_constants.dart';
 
@@ -67,6 +68,10 @@ class CreatePostController extends GetxController {
                         .pickImage(source: ImageSource.camera);
                     Get.back();
                     imagePath.add(File(image!.path));
+                    if (imagePath.length > 4) {
+                      showMessage("You can only choice max 4 images!", context);
+                      imagePath = [];
+                    }
                     update();
                   },
                 ),
@@ -85,6 +90,10 @@ class CreatePostController extends GetxController {
                       imagePath.add(File(image.path));
                     }
                     Get.back();
+                    if (imagePath.length > 4) {
+                      showMessage("You can only choice max 4 images!", context);
+                      imagePath = [];
+                    }
                     update();
                   },
                 ),

@@ -88,9 +88,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         createPostWidget(
                             userAvatar:
                                 homeController.currentUser!.avatar!.fileName!,
-                            getPostList: () async {
-                              homeController.getList;
-                            }),
+                            isInProfile: false),
                         ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,

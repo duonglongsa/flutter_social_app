@@ -15,6 +15,10 @@ class RoomChatController extends GetxController {
     super.onInit();
     userId = await storage.read(key: "userId");
     token = await storage.read(key: "token");
+    await getChatRoomList();
+  }
+
+  Future getChatRoomList() async {
     roomChatList = await ChatService.getChatRoomList(token!, userId!);
     sortRoomChat();
     update();
@@ -34,10 +38,7 @@ class RoomChatController extends GetxController {
   void enterRoomChat(RoomModel room) {
     Get.to(() => ChatScreen(roomId: room.roomId!, member: room.member[0]))!
         .then((result) {
-      room.lastMessage = result as MessageModel;
-      sortRoomChat();
+      getChatRoomList();
     });
-    print(room.lastMessage.content);
-    update();
   }
 }

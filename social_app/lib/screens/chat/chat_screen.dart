@@ -287,9 +287,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   decoration: BoxDecoration(
-                    color: chatMessage.isSender
-                        ? const Color(0xff6E65E8)
-                        : const Color(0xff8782CE),
+                    color: chatMessage.content == "Tin nhan da bi thu hoi"
+                        ? Colors.transparent
+                        : chatMessage.isSender
+                            ? const Color(0xff6E65E8)
+                            : const Color(0xff8782CE),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -304,7 +306,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Container(
                     child: Text(
                       chatMessage.content!,
-                      style: const TextStyle(color: Colors.white),
+                      style: chatMessage.content == "Tin nhan da bi thu hoi"
+                          ? const TextStyle(
+                              color: Colors.white, fontStyle: FontStyle.italic)
+                          : const TextStyle(color: Colors.white),
                     ),
                     constraints: const BoxConstraints(maxWidth: 200),
                   )),

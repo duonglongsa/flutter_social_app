@@ -25,7 +25,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'create_post/create_post_screen.dart';
 
-Widget createPostWidget({required String userAvatar, required VoidCallback getPostList}) {
+Widget createPostWidget({required String userAvatar, required bool isInProfile}) {
   return Card(
     elevation: 5,
     child: Container(
@@ -33,8 +33,13 @@ Widget createPostWidget({required String userAvatar, required VoidCallback getPo
       color: cointainerColor,
       child: InkWell(
         onTap: () {
-          Get.to(() => const CreatePostScreen())!.then((value) {
-            getPostList;
+          Get.to(() => const CreatePostScreen())!.then((value) async {
+            final homeController = Get.find<HomeController>();
+            await homeController.getList();
+            if(isInProfile){
+              final profileController = Get.find<UserProfleController>();
+              await profileController.getProfilePost(profileController.userId!);
+            }
           });
         },
         child: Column(

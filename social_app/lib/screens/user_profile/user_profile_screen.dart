@@ -86,6 +86,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white)),
                     const SizedBox(height: 20, width: 0),
+                    Text(userProfileController.user!.description!,
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white70)),
                     //ban be
                     if (userProfileController.user!.type! == 1)
                       Padding(
@@ -96,7 +99,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Expanded(
                               child: TextButton.icon(
                                 onPressed: () {
-                                  
+                                  userProfileController.joinChatRoom();
                                 },
                                 label: const Text(
                                   'Message',
@@ -204,9 +207,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       createPostWidget(
                           userAvatar:
                               userProfileController.user!.avatar!.fileName!,
-                          getPostList: () {
-                            userProfileController.getProfilePost(widget.userId);
-                          }),
+                          isInProfile: true),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

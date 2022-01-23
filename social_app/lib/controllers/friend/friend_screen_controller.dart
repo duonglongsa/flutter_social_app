@@ -41,14 +41,15 @@ class FriendController extends GetxController {
     String roomId = "";
     for(RoomModel room in roomChatController.roomChatList!){
       if(room.memberId.contains(friend.id)){
-        print("match");
         roomId = room.roomId!;
       }
     }
     if(roomId == ""){
       roomId = await ChatService.sendMessage(token!, MessageModel(friend, "", "Hello ${friend.name}"));
     }
-    Get.to(()=>ChatScreen(roomId: roomId, member: friend));
+    Get.to(()=>ChatScreen(roomId: roomId, member: friend))!.then((value) async => {
+      await roomChatController.getChatRoomList()
+    });
   }
 
   Future getRequestList() async {
